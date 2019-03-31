@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHC Development</title>
+    <style>
+      body {
+        color: #333333;
+      }
+      a {
+        color: inherit;
+      }
+      code {
+        font-family: monospace;
+      }
+      .snippet {
+        display: block;
+        background: rgba(0,0,0,.4);
+        padding: 1em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+      }
+      .prompt {
+        margin-left: 2em;
+        text-indent: -2em;
+      }
+      .prompt::before {
+        content: "$ ";
+      }
+      .topics {
+        display: grid;
+        justify-content: center;
+        grid-template-columns: repeat(auto-fill, 320px);
+        grid-gap: 10px;
+      }
+      .topic {
+        /*border: 1px solid #dddddd;
+        border-radius: 10px;*/
+        padding: 20px;
+      }
+      .topic-greetings {
+        grid-column: 1 / -1;
+        background: linear-gradient(to bottom left, #90A4AE, #ECEFF1);
+      }
+      .topic-code {
+        background: linear-gradient(to bottom, #311B92, #9C27B0);
+        color: #EDEDED;
+      }
+      .topic-docs {
+        background: linear-gradient(to left, #009688, #00695C);
+        color: #EDEDED;
+      }
+      .topic-build {
+        background: linear-gradient(to bottom, #E65100, #F9A825);
+        color: #EDEDED;
+      }
+      .topic-communication {
+        background: linear-gradient(to top left, #4FC3F7, #F9FBE7);
+      }
+      .nowrap {
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topics">
+      <div class="topic topic-greetings">
+        <h2>Greetings!</h2>
+        <p>
+          Follow GHC development, use the development compiler snapshot for your daring experiments, or become a contributor.
+        </p>
+      </div>
+      <div class="topic topic-docs">
+        <h2>Documentation</h2>
+        <p>
+           Documentation for <a href="https://gitlab.haskell.org/ghc/ghc/commits/master">master</a> is built with GitLab CI:
+        </p>
+        <p><a href="https://ghc.gitlab.haskell.org/ghc/doc/users_guide/">User's Guide</a> &ndash; command line options, language extensions, and so on.</p>
+        <p><a href="https://ghc.gitlab.haskell.org/ghc/doc/libraries/">Libraries</a> &ndash; Haddock for <code>base</code>, <code>containers</code>, <code>transformers</code>, and other boot libraries.</p>
+        <p><a href="https://ghc.gitlab.haskell.org/ghc/doc/libraries/ghc-8.9/">GHC API</a> &ndash; use GHC as a library.</p>
+      </div>
+      <div class="topic topic-code">
+        <h2>Getting the Code</h2>
+        <p>
+          GHC has its own <a href="https://gitlab.haskell.org/ghc/ghc">GitLab instance</a>.
+          You can sign in with your GitHub account.
+        </p>
+        <code class="snippet">
+          <div class="prompt">git clone --recursive git@gitlab.haskell.org:ghc/<wbr>ghc.git</div>
+        </code>
+        <p>
+          <code>--recursive</code> is needed because GHC uses git submodules.
+        </p>
+      </div>
+      <div class="topic topic-build">
+        <h2>Building</h2>
+        <p>For the first time:</p>
+        <code class="snippet">
+          <div class="prompt">./boot &amp;&amp; ./configure</div>
+          <div class="prompt">cabal v2-update</div>
+          <div class="prompt">hadrian/build.sh <span class="nowrap">--flavour=Quick</span></div>
+        </code>
+        <p>Quick <code>stage2</code> rebuild:</p>
+        <code class="snippet">
+          <div class="prompt">hadrian/build.sh <span class="nowrap">--flavour=Quick</span> <span class="nowrap">--freeze1</span></div>
+        </code>
+      </div>
+      <div class="topic topic-communication">
+        <h2>Communication</h2>
+        <p>To report a bug, use the <a href="https://gitlab.haskell.org/ghc/ghc/issues">GitLab issue tracker</a>.</p>
+        <p>To propose a new language feature, the <a href="https://github.com/ghc-proposals/ghc-proposals"><code class="nowrap">ghc-proposals</code></a> platform.</p>
+        <p>For a technical discussion or a question, the <a href="https://mail.haskell.org/pipermail/ghc-devs/"><code class="nowrap">ghc-devs</code></a> mailing list or
+          the <code>#ghc</code> channel on Freenode (IRC).</p>
+      </div>
+    </div>
+  </body>
+</html>
