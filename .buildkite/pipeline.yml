@@ -8,12 +8,12 @@ steps:
   - commands:
     - "nix-shell --run \"cabal v2-update && make\""
     label: "make"
-    artifact_paths: "*.html"
+    artifact_paths: "out/*"
   - wait
   - label: 'Deploy'
     commands:
-    - "buildkite-agent artifact download '*.html'"
-    - "nix-shell -p awscli --run \"aws s3 cp '*.html' $CDN_BUCKET\""
+    - "buildkite-agent artifact download 'out/*'"
+    - "nix-shell -p awscli --run \"aws s3 cp out $CDN_BUCKET/ --recursive\""
     - "echo +++ Invalidating cache"
     - "nix-shell -p awscli --run \"aws cloudfront create-invalidation --distribution-id $CDN_DISTRIBUTION_ID --paths \"/*\"\""
     branches: 'master'
