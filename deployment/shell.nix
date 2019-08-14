@@ -1,4 +1,2 @@
-{ pkgs ? import <nixpkgs> {} }:
-pkgs.mkShell {
-  buildInputs = [ pkgs.terraform-full ];
-}
+{ pkgs ? import <nixpkgs> { } }:
+pkgs.mkShell { buildInputs = [ (pkgs.terraform.withPlugins (p: [ p.aws ])) ]; }
