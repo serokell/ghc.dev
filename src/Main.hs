@@ -12,12 +12,22 @@ import qualified Data.ByteString.Lazy as ByteString
 import Data.String (IsString(fromString))
 import Data.Foldable (traverse_)
 
-main :: IO ()
-main = putByteString (renderMarkup mainPage)
+import System.Environment
+import System.Directory
+import System.FilePath
+import System.Exit
 
-putByteString :: ByteString.ByteString -> IO ()
-putByteString s =
-  Text.writeFile "index.html" (Text.decodeUtf8 (ByteString.toStrict s))
+main :: IO ()
+main = do
+  outputDir <- getArgs >>= \case
+    [dir] -> return dir
+    _ -> die "Usage: ghc-dev-webgen DIR"
+  createDirectoryIfMissing True outputDir
+  putByteString (outputDir </> "index.html") (renderMarkup mainPage)
+
+putByteString :: FilePath -> ByteString.ByteString -> IO ()
+putByteString path s =
+  Text.writeFile path (Text.decodeUtf8 (ByteString.toStrict s))
 
 mainPage :: H.Html
 mainPage = do

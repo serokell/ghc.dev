@@ -18,7 +18,9 @@ executable ghc-dev-webgen
     containers,
     mtl,
     reflection,
-    text
+    text,
+    filepath,
+    directory
 
   hs-source-dirs:
     src
