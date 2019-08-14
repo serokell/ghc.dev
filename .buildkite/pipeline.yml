@@ -15,5 +15,5 @@ steps:
     - "buildkite-agent artifact download 'out/*' ."
     - "nix-shell -p awscli --run \"aws s3 cp out $CDN_BUCKET/ --recursive\""
     - "echo +++ Invalidating cache"
-    - "nix-shell -p awscli --run \"aws cloudfront create-invalidation --distribution-id $CDN_DISTRIBUTION_ID --paths \"/*\"\""
+    - "nix-shell -p awscli --run \"aws cloudfront create-invalidation --distribution-id $CDN_DISTRIBUTION_ID --paths '/*'\""
     branches: 'master'
