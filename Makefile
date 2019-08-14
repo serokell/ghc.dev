@@ -1,2 +1,5 @@
-index.html:
-	cabal v2-run ghc-dev-webgen
+.PHONY: clean
+out:
+	cabal v2-run ghc-dev-webgen out
+clean:
+	rm -r out
