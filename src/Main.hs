@@ -118,22 +118,26 @@ data Ref =
   RefGitMaster |
   RefUsersGuide |
   RefLibrariesHaddock |
-  RefGHC_API_Haddock |
+  RefGHC_Wiki |
   RefGitLab |
   RefReportBug |
   RefGhcProposals |
-  RefGhcDevsMailingList
+  RefGhcDevsMailingList |
+  RefNix |
+  RefGHC_Nix
 
 ref :: IsString s => Ref -> s
 ref = \case
   RefGitMaster -> "https://gitlab.haskell.org/ghc/ghc/commits/master"
   RefUsersGuide -> "https://ghc.gitlab.haskell.org/ghc/doc/users_guide/"
   RefLibrariesHaddock -> "https://ghc.gitlab.haskell.org/ghc/doc/libraries/"
-  RefGHC_API_Haddock -> "https://ghc.gitlab.haskell.org/ghc/doc/libraries/ghc-8.9/"
+  RefGHC_Wiki -> "https://gitlab.haskell.org/ghc/ghc/wikis/home"
   RefGitLab -> "https://gitlab.haskell.org/ghc/ghc"
   RefReportBug -> "https://gitlab.haskell.org/ghc/ghc/issues"
   RefGhcProposals -> "https://github.com/ghc-proposals/ghc-proposals"
   RefGhcDevsMailingList -> "https://mail.haskell.org/pipermail/ghc-devs/"
+  RefNix -> "https://nixos.org/nix/"
+  RefGHC_Nix -> "https://github.com/alpmestan/ghc.nix"
 
 data Topic =
   Topic
@@ -146,7 +150,11 @@ topics :: [Topic]
 topics =
   [ topicDocs,
     topicCode,
+    topicSystem,
     topicBuild,
+    topicRunning,
+    topicTesting,
+    topicDebugging,
     topicCommunication ]
 
 topicDocs :: Topic
@@ -158,6 +166,11 @@ topicDocs =
       topicStyle }
   where
     topicContent = do
+      H.p do
+        "The "
+        H.a "Wiki" ! A.href (ref RefGHC_Wiki)
+        " is a comprehensive resource about GHC development."
+        " Use it when this cheatsheet is insufficient."
       H.p do
         "Documentation for "
         H.a "master" ! A.href (ref RefGitMaster)
@@ -174,10 +187,7 @@ topicDocs =
           (map H.code ["base", "containers", "transformers"])
           "and other boot libraries"
         "."
-      H.p do
-        H.a "GHC API" ! A.href (ref RefGHC_API_Haddock)
-        " " <> ndash <> " use GHC as a library."
-    topicStyle = do pure()
+    topicStyle = do pure ()
 
 prompt :: [H.Html] -> H.Html
 prompt parts = (H.div ! A.class_ "prompt") (go parts)
@@ -212,6 +222,31 @@ topicCode =
         H.code "--recursive" <> " is needed because GHC uses git submodules."
     topicStyle = do pure()
 
+topicSystem :: Topic
+topicSystem =
+  Topic
+    { topicName = "system",
+      topicTitle = "Prepare the System",
+      topicContent,
+      topicStyle }
+  where
+    topicContent = do
+      H.p do
+        H.a "Nix" ! A.href (ref RefNix)
+        " users are fortunate to have "
+        H.a (H.code "ghc.nix") ! A.href (ref RefGHC_Nix)
+        ":"
+      snippet do
+        prompt [ "git", "clone", "https://github.com/alpmestan/" <> H.wbr <> "ghc.nix" ]
+        prompt [ "nix-shell ghc.nix" ]
+      H.p do
+        "This will install "
+        H.code "alex" <> ", "
+        H.code "happy" <> ", "
+        H.code "texlive" <> ", "
+        "and other build dependencies."
+    topicStyle = do pure()
+
 topicBuild :: Topic
 topicBuild =
   Topic
@@ -236,6 +271,74 @@ topicBuild =
             nowrap H.span "--freeze1" ]
     topicStyle = do pure()
 
+topicRunning :: Topic
+topicRunning =
+  Topic
+    { topicName = "running",
+      topicTitle = "Running",
+      topicContent,
+      topicStyle }
+  where
+    topicContent = do
+      H.p do
+        "The build artifacts are stored in the "
+        H.code "_build"
+        " directory."
+      H.p "Run the freshly built GHCi:"
+      snippet do
+        prompt [ nowrap H.span "_build/stage1/bin/ghc",
+                 nowrap H.span "--interactive"]
+    topicStyle = do pure()
+
+topicTesting :: Topic
+topicTesting =
+  Topic
+    { topicName = "testing",
+      topicTitle = "Testing",
+      topicContent,
+      topicStyle }
+  where
+    topicContent = do
+      H.p "Run a particular set of tests:"
+      snippet do
+        prompt
+          [ "hadrian/build.sh", "-j",
+            nowrap H.span "--flavour=Quick",
+            nowrap H.span "--freeze1",
+            "test",
+            nowrap H.span "--only=\"T1 T2 T3\"" ]
+      H.p do
+        "Use "
+        H.code "-a"
+        " to accept the output of failing tests."
+      H.p do
+        "Omit "
+        H.code "--only"
+        " to run the entire testsuite."
+    topicStyle = do pure()
+
+topicDebugging :: Topic
+topicDebugging =
+  Topic
+    { topicName = "debugging",
+      topicTitle = "Debugging",
+      topicContent,
+      topicStyle }
+  where
+    topicContent = do
+      H.p do
+        "Pass the "
+        nowrap H.code "-ddump-tc-trace"
+        " flag to dump the type checker debug output; "
+        nowrap H.code "-ddump-rn-trace"
+        " for the renamer."
+      H.p "Build GHC with assertions enabled:"
+      snippet do
+        prompt
+          [ "hadrian/build.sh", "-j",
+            nowrap H.span "--flavour=Devel2" ]
+    topicStyle = do pure()
+
 topicCommunication :: Topic
 topicCommunication =
   Topic
@@ -258,6 +361,4 @@ topicCommunication =
         H.a (nowrap H.code "ghc-devs") ! A.href (ref RefGhcDevsMailingList)
         " mailing list or the "
         H.code "#ghc" <> " channel on Freenode (IRC)."
-    topicStyle = do
-      --"background" -: "linear-gradient(to top left, #4FC3F7, #F9FBE7)"
-      pure()
+    topicStyle = do pure()
