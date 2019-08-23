@@ -12,6 +12,9 @@ import qualified Data.ByteString.Lazy as ByteString
 import Data.String (IsString(fromString))
 import Data.Foldable (traverse_)
 
+import Data.Time.Clock
+import Data.Time.Calendar
+
 import System.Environment
 import System.Directory
 import System.FilePath
@@ -23,14 +26,15 @@ main = do
     [dir] -> return dir
     _ -> die "Usage: ghc-dev-webgen DIR"
   createDirectoryIfMissing True outputDir
-  putByteString (outputDir </> "index.html") (renderMarkup mainPage)
+  time <- getCurrentTime
+  putByteString (outputDir </> "index.html") (renderMarkup (mainPage time))
 
 putByteString :: FilePath -> ByteString.ByteString -> IO ()
 putByteString path s =
   Text.writeFile path (Text.decodeUtf8 (ByteString.toStrict s))
 
-mainPage :: H.Html
-mainPage = do
+mainPage :: UTCTime -> H.Html
+mainPage time = do
   (H.docTypeHtml ! A.lang "en") do
     H.head do
       H.meta ! A.charset "utf-8"
@@ -44,11 +48,18 @@ mainPage = do
         headerHtml
       (H.div ! A.class_ "topics") do
         traverse_ topicHtml topics
+      (H.div ! A.class_ "footer") do
+        footerHtml time
 
 headerHtml :: H.Html
 headerHtml = do
   H.h1 "The Glasgow Haskell Compiler"
   H.h2 "a contributor's cheatsheet"
+
+footerHtml :: UTCTime -> H.Html
+footerHtml time = H.p do
+  H.a "Serokell" ! A.href "https://serokell.io/"
+  ", " <> fromString (showGregorian (utctDay time))
 
 mainStyle :: C.Css
 mainStyle = do
@@ -78,6 +89,9 @@ mainStyle = do
     "background" -: "linear-gradient(to top left, #222222, #333333)"
     "border" -: "1px solid #333333"
   traverse_ topicCss topics
+  ".footer" ? do
+    C.color "#888888"
+    C.textAlign C.center
 
 snippetCss :: C.Css
 snippetCss = do

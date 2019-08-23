@@ -20,7 +20,8 @@ executable ghc-dev-webgen
     reflection,
     text,
     filepath,
-    directory
+    directory,
+    time
 
   hs-source-dirs:
     src
