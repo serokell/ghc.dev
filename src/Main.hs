@@ -66,10 +66,13 @@ mainStyle = do
   C.body <> C.html ? do
     C.sym C.margin C.nil
     C.sym C.padding C.nil
-    "font-family" -: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Oxygen-Sans,Ubuntu,Cantarell,\"Helvetica Neue\",sans-serif"
+    "font-family" -: "system-ui,-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Oxygen-Sans,Ubuntu,Cantarell,\"Helvetica Neue\",sans-serif"
   C.body ? do
     C.backgroundColor "#222222"
     C.color "#CDCDCF"
+    C.minHeight (C.vh 100)
+    C.display C.flex
+    C.flexDirection C.column
   C.a ? C.color C.inherit
   C.code ? C.fontFamily [] [C.monospace]
   ".nowrap" ? C.whiteSpace C.nowrap
@@ -80,6 +83,7 @@ mainStyle = do
     "background" -: "linear-gradient(to bottom right, #3A2A85 30%, transparent)"
     C.textAlign C.center
   ".topics" ? do
+    "flex" -: "1"
     C.sym C.padding (C.px 20)
     C.display C.grid
     C.justifyContent C.center
