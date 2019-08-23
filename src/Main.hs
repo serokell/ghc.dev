@@ -40,15 +40,47 @@ mainPage = do
       H.title "GHC Development"
       styleEmbedCss mainStyle
     H.body do
+      (H.div ! A.class_ "header") do
+        headerHtml
       (H.div ! A.class_ "topics") do
         traverse_ topicHtml topics
 
+headerHtml :: H.Html
+headerHtml = do
+  H.h1 "The Glasgow Haskell Compiler"
+  H.h2 "a contributor's cheatsheet"
+
 mainStyle :: C.Css
 mainStyle = do
-  C.body ? C.color "#333333"
+  C.body <> C.html ? do
+    C.sym C.margin C.nil
+    C.sym C.padding C.nil
+  C.body ? do
+    C.backgroundColor "#222222"
+    C.color "#CDCDCF"
   C.a ? C.color C.inherit
   C.code ? C.fontFamily [] [C.monospace]
   ".nowrap" ? C.whiteSpace C.nowrap
+  snippetCss
+  ".header" ? do
+    C.color "#EDEDED"
+    C.sym C.padding (C.px 20)
+    "background" -: "linear-gradient(to bottom right, #3A2A85 30%, transparent)"
+    C.textAlign C.center
+  ".topics" ? do
+    C.paddingTop (C.px 20)
+    C.display C.grid
+    C.justifyContent C.center
+    "grid-template-columns" -: "repeat(auto-fill, 320px)"
+    "grid-gap" -: "20px"
+  ".topic" ? do
+    C.sym C.padding (C.px 20)
+    "background" -: "linear-gradient(to top left, #222222, #333333)"
+    "border" -: "1px solid #333333"
+  traverse_ topicCss topics
+
+snippetCss :: C.Css
+snippetCss = do
   ".snippet" ? do
     C.display C.block
     C.background (C.rgba 0 0 0 0.4)
@@ -60,13 +92,6 @@ mainStyle = do
     C.marginLeft (C.em m)
     C.textIndent (C.indent (C.em (negate m)))
   ".prompt::before" ? C.content (C.stringContent "$ ")
-  ".topics" ? do
-    C.display C.grid
-    C.justifyContent C.center
-    "grid-template-columns" -: "repeat(auto-fill, 320px)"
-    "grid-gap" -: "10px"
-  ".topic" ? C.sym C.padding (C.px 20)
-  traverse_ topicCss topics
 
 topicHtml :: Topic -> H.Html
 topicHtml Topic{topicName, topicTitle, topicContent} = do
@@ -119,27 +144,10 @@ data Topic =
 
 topics :: [Topic]
 topics =
-  [ topicGreetings,
-    topicDocs,
+  [ topicDocs,
     topicCode,
     topicBuild,
     topicCommunication ]
-
-topicGreetings :: Topic
-topicGreetings =
-  Topic
-    { topicName = "greetings",
-      topicTitle = "Greetings!",
-      topicContent,
-      topicStyle }
-  where
-    topicContent = do
-      H.p do
-        "Follow GHC development, use the development compiler snapshot for\
-        \ your daring experiments, or become a contributor."
-    topicStyle = do
-      "grid-column" -: "1 / -1"
-      "background" -: "linear-gradient(to bottom left, #90A4AE, #ECEFF1)"
 
 topicDocs :: Topic
 topicDocs =
@@ -169,9 +177,7 @@ topicDocs =
       H.p do
         H.a "GHC API" ! A.href (ref RefGHC_API_Haddock)
         " " <> ndash <> " use GHC as a library."
-    topicStyle = do
-      "background" -: "linear-gradient(to left, #009688, #00695C)"
-      C.color "#EDEDED"
+    topicStyle = do pure()
 
 prompt :: [H.Html] -> H.Html
 prompt parts = (H.div ! A.class_ "prompt") (go parts)
@@ -204,9 +210,7 @@ topicCode =
             "git@gitlab.haskell.org:ghc/" <> H.wbr <> "ghc.git" ]
       H.p do
         H.code "--recursive" <> " is needed because GHC uses git submodules."
-    topicStyle = do
-      "background" -: "linear-gradient(to bottom, #311B92, #9C27B0)"
-      C.color "#EDEDED"
+    topicStyle = do pure()
 
 topicBuild :: Topic
 topicBuild =
@@ -230,9 +234,7 @@ topicBuild =
           [ "hadrian/build.sh", "-j",
             nowrap H.span "--flavour=Quick",
             nowrap H.span "--freeze1" ]
-    topicStyle = do
-      "background" -: "linear-gradient(to bottom, #E65100, #F9A825)"
-      C.color "#EDEDED"
+    topicStyle = do pure()
 
 topicCommunication :: Topic
 topicCommunication =
@@ -257,4 +259,5 @@ topicCommunication =
         " mailing list or the "
         H.code "#ghc" <> " channel on Freenode (IRC)."
     topicStyle = do
-      "background" -: "linear-gradient(to top left, #4FC3F7, #F9FBE7)"
+      --"background" -: "linear-gradient(to top left, #4FC3F7, #F9FBE7)"
+      pure()
