@@ -66,6 +66,7 @@ mainStyle = do
   C.body <> C.html ? do
     C.sym C.margin C.nil
     C.sym C.padding C.nil
+    "font-family" -: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Oxygen-Sans,Ubuntu,Cantarell,\"Helvetica Neue\",sans-serif"
   C.body ? do
     C.backgroundColor "#222222"
     C.color "#CDCDCF"
@@ -79,7 +80,7 @@ mainStyle = do
     "background" -: "linear-gradient(to bottom right, #3A2A85 30%, transparent)"
     C.textAlign C.center
   ".topics" ? do
-    C.paddingTop (C.px 20)
+    C.sym C.padding (C.px 20)
     C.display C.grid
     C.justifyContent C.center
     "grid-template-columns" -: "repeat(auto-fill, 320px)"
