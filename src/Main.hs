@@ -245,7 +245,7 @@ topicSystem :: Topic
 topicSystem =
   Topic
     { topicName = "system",
-      topicTitle = "Prepare the System",
+      topicTitle = "Preparing the System",
       topicContent,
       topicStyle }
   where
