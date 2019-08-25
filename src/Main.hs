@@ -236,7 +236,7 @@ topicCode =
       snippet do
         prompt
           [ "git", "clone", nowrap H.span "--recursive",
-            "git@gitlab.haskell.org:ghc/" <> H.wbr <> "ghc.git" ]
+            "https://gitlab.haskell.org/" <> H.wbr <> "ghc/ghc.git" ]
       H.p do
         H.code "--recursive" <> " is needed because GHC uses git submodules."
     topicStyle = do pure()
