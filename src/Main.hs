@@ -57,9 +57,12 @@ headerHtml = do
   H.h2 "a contributor's cheatsheet"
 
 footerHtml :: UTCTime -> H.Html
-footerHtml time = H.p do
-  H.a "Serokell" ! A.href "https://serokell.io/"
-  ", " <> fromString (showGregorian (utctDay time))
+footerHtml time = do
+  H.p do
+    H.a "Serokell" ! A.href "https://serokell.io/"
+    ", " <> fromString (showGregorian (utctDay time))
+    ". "
+    H.a "Source on GitHub"  ! A.href "https://github.com/serokell/ghc.dev/"
 
 mainStyle :: C.Css
 mainStyle = do
