@@ -283,12 +283,12 @@ topicBuild =
         prompt ["./boot && ./configure"]
         prompt ["cabal", "v2-update"]
         prompt
-          [ "hadrian/build.sh", "-j",
+          [ "hadrian/build", "-j",
             nowrap H.span "--flavour=Quick" ]
       H.p ("Quick " <> H.code "stage2" <> " rebuild:")
       snippet do
         prompt
-          [ "hadrian/build.sh", "-j",
+          [ "hadrian/build", "-j",
             nowrap H.span "--flavour=Quick",
             nowrap H.span "--freeze1" ]
     topicStyle = do pure()
@@ -324,7 +324,7 @@ topicTesting =
       H.p "Run a particular set of tests:"
       snippet do
         prompt
-          [ "hadrian/build.sh", "-j",
+          [ "hadrian/build", "-j",
             nowrap H.span "--flavour=Quick",
             nowrap H.span "--freeze1",
             "test",
@@ -357,7 +357,7 @@ topicDebugging =
       H.p "Build GHC with assertions enabled:"
       snippet do
         prompt
-          [ "hadrian/build.sh", "-j",
+          [ "hadrian/build", "-j",
             nowrap H.span "--flavour=Devel2" ]
     topicStyle = do pure()
 
