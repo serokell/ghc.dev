@@ -5,6 +5,7 @@ import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5.Attributes as A
 import Text.Blaze.Renderer.Utf8 (renderMarkup)
 import qualified Clay as C
+import qualified Clay.Media as C.Media
 import Clay ((?), (-:))
 import qualified Data.Text.IO as Text
 import qualified Data.Text.Encoding as Text
@@ -92,6 +93,9 @@ mainStyle = do
     C.justifyContent C.center
     "grid-template-columns" -: "repeat(auto-fill, 320px)"
     "grid-gap" -: "20px"
+  C.query C.all [C.Media.minWidth (C.px 1333)] $ do
+    ".topics" ? do
+      "grid-template-columns" -: "repeat(4, 320px)"
   ".topic" ? do
     C.sym C.padding (C.px 20)
     "background" -: "linear-gradient(to top left, #222222, #333333)"
