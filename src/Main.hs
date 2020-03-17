@@ -93,6 +93,7 @@ mainStyle = do
     C.justifyContent C.center
     "grid-template-columns" -: "repeat(auto-fill, 320px)"
     "grid-gap" -: "20px"
+    "grid-auto-rows" -: "min-content"
   C.query C.all [C.Media.minWidth (C.px 1333)] $ do
     ".topics" ? do
       "grid-template-columns" -: "repeat(4, 320px)"
