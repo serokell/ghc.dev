@@ -182,6 +182,7 @@ topics =
     topicRunning,
     topicTesting,
     topicDebugging,
+    topicBuildingDocs,
     topicCommunication ]
 
 topicDocs :: Topic
@@ -278,7 +279,7 @@ topicBuild :: Topic
 topicBuild =
   Topic
     { topicName = "build",
-      topicTitle = "Building",
+      topicTitle = "Building the Compiler",
       topicContent,
       topicStyle }
   where
@@ -316,6 +317,27 @@ topicRunning =
         prompt [ nowrap H.span "_build/stage1/bin/ghc",
                  nowrap H.span "--interactive"]
     topicStyle = do pure()
+
+topicBuildingDocs :: Topic
+topicBuildingDocs =
+  Topic
+    { topicName = "build-docs",
+      topicTitle = "Building the User's Guide",
+      topicContent,
+      topicStyle
+    }
+  where
+    topicContent = do
+      H.p "To build the User's Guide and Haddock documentation for boot libraries:"
+      snippet do
+        prompt
+          [ "hadrian/build", "-j",
+            nowrap H.span "--flavour=Quick",
+            nowrap H.span "--freeze1",
+            nowrap H.span "docs --docs=no-sphinx-pdfs" ]
+      H.p "The generated HTML documentation is saved at:"
+      snippet "_build/docs/html/index.html"
+    topicStyle = do pure ()
 
 topicTesting :: Topic
 topicTesting =
