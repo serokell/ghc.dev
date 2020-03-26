@@ -147,6 +147,7 @@ data Ref =
   RefLibrariesHaddock |
   RefGHC_Wiki |
   RefGitLab |
+  RefGitLabMergeRequest |
   RefReportBug |
   RefGhcProposals |
   RefGhcDevsMailingList |
@@ -160,6 +161,7 @@ ref = \case
   RefLibrariesHaddock -> "https://ghc.gitlab.haskell.org/ghc/doc/libraries/"
   RefGHC_Wiki -> "https://gitlab.haskell.org/ghc/ghc/wikis/home"
   RefGitLab -> "https://gitlab.haskell.org/ghc/ghc"
+  RefGitLabMergeRequest -> "https://gitlab.haskell.org/ghc/ghc/wikis/Contributing-a-Patch#opening-a-merge-request"
   RefReportBug -> "https://gitlab.haskell.org/ghc/ghc/issues"
   RefGhcProposals -> "https://github.com/ghc-proposals/ghc-proposals"
   RefGhcDevsMailingList -> "https://mail.haskell.org/pipermail/ghc-devs/"
@@ -400,6 +402,10 @@ topicCommunication =
       H.p do
         "To report a bug, use the "
         H.a "GitLab issue tracker" ! A.href (ref RefReportBug)
+        "."
+      H.p do
+        "To contribute a change, use the "
+        H.a "GitLab merge request" ! A.href (ref RefGitLabMergeRequest)
         "."
       H.p do
         "To propose a new language feature, the "
