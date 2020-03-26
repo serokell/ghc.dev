@@ -404,7 +404,7 @@ topicCommunication =
         H.a "GitLab issue tracker" ! A.href (ref RefReportBug)
         "."
       H.p do
-        "To contribute a change, use the "
+        "To contribute a change, open a "
         H.a "GitLab merge request" ! A.href (ref RefGitLabMergeRequest)
         "."
       H.p do
