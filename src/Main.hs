@@ -246,10 +246,13 @@ topicCode =
         ". You can sign in with your GitHub account."
       snippet do
         prompt
-          [ "git", "clone", nowrap H.span "--recursive",
+          [ "git", "clone", nowrap H.span "--recurse-submodules",
             "https://gitlab.haskell.org/" <> H.wbr <> "ghc/ghc.git" ]
       H.p do
-        H.code "--recursive" <> " is needed because GHC uses git submodules."
+        nowrap H.code "git pull"
+        " also requires "
+        nowrap H.code "--recurse-submodules"
+        " because GHC uses git submodules."
     topicStyle = do pure()
 
 topicSystem :: Topic
