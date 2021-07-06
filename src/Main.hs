@@ -418,5 +418,5 @@ topicCommunication =
         "For a technical discussion or a question, the "
         H.a (nowrap H.code "ghc-devs") ! A.href (ref RefGhcDevsMailingList)
         " mailing list or the "
-        H.code "#ghc" <> " channel on Freenode (IRC)."
+        H.code "#ghc" <> " channel on libera.chat (IRC)."
     topicStyle = do pure()
