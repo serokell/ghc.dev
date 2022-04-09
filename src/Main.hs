@@ -223,6 +223,7 @@ prompt :: [H.Html] -> H.Html
 prompt parts = (H.div ! A.class_ "prompt") (go parts)
   where
     go [] = mempty
+    go [x] = x
     go (x:xs) = x <> " " <> go xs
 
 nowrap :: (H.Html -> H.Html) -> H.Html -> H.Html
