@@ -272,7 +272,7 @@ topicSystem =
         ":"
       snippet do
         prompt [ "git", "clone", "https://github.com/alpmestan/" <> H.wbr <> "ghc.nix" ]
-        prompt [ "nix-shell ghc.nix" ]
+        prompt [ "nix develop ghc.nix" ]
       H.p do
         "This will install "
         H.code "alex" <> ", "
