@@ -17,6 +17,7 @@
         ghc-dev =
           pkgs.stdenv.mkDerivation {
             name = "ghc-dev";
+            nativeBuildInputs = [ pkgs.graphviz ];
             buildCommand = ''
               mkdir -p "$out/out"
               "${haskellPackages.ghc-dev-webgen}"/bin/ghc-dev-webgen "$out/out"
@@ -31,6 +32,7 @@
           haskellPackages.hie-bios
           haskellPackages.haskell-language-server
           haskellPackages.cabal-install
+          pkgs.graphviz
         ];
       };
     };

@@ -12,12 +12,14 @@ import Data.String (IsString(fromString))
 import Data.Foldable (traverse_)
 
 import Data.Time.Clock
-import Data.Time.Calendar
 
 import System.Environment
 import System.Directory
 import System.FilePath
 import System.Exit
+
+import Pages.DH (generateDhPage)
+import Pages.Common
 
 main :: IO ()
 main = do
@@ -27,6 +29,8 @@ main = do
   createDirectoryIfMissing True outputDir
   time <- getCurrentTime
   ByteString.writeFile (outputDir </> "index.html") (renderMarkup (mainPage time))
+  dhPage <- generateDhPage time
+  ByteString.writeFile (outputDir </> "dh.html") (renderMarkup dhPage)
 
 mainPage :: UTCTime -> H.Html
 mainPage time = do
@@ -40,46 +44,19 @@ mainPage time = do
       styleEmbedCss mainStyle
     H.body do
       (H.div ! A.class_ "header") do
-        headerHtml
+        headerHtml "a contributor's cheatsheet"
       (H.div ! A.class_ "topics") do
         traverse_ topicHtml topics
       (H.div ! A.class_ "footer") do
         footerHtml time
 
-headerHtml :: H.Html
-headerHtml = do
-  H.h1 "The Glasgow Haskell Compiler"
-  H.h2 "a contributor's cheatsheet"
-
-footerHtml :: UTCTime -> H.Html
-footerHtml time = do
-  H.p do
-    H.a "Serokell" ! A.href "https://serokell.io/"
-    ", " <> fromString (showGregorian (utctDay time))
-    ". "
-    H.a "Source on GitHub"  ! A.href "https://github.com/serokell/ghc.dev/"
-
 mainStyle :: C.Css
 mainStyle = do
-  C.body <> C.html ? do
-    C.sym C.margin C.nil
-    C.sym C.padding C.nil
-    "font-family" -: "system-ui,-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Oxygen-Sans,Ubuntu,Cantarell,\"Helvetica Neue\",sans-serif"
+  commonStyle
   C.body ? do
-    C.backgroundColor "#222222"
-    C.color "#CDCDCF"
-    C.minHeight (C.vh 100)
     C.display C.flex
     C.flexDirection C.column
-  C.a ? C.color C.inherit
-  C.code ? C.fontFamily [] [C.monospace]
-  ".nowrap" ? C.whiteSpace C.nowrap
   snippetCss
-  ".header" ? do
-    C.color "#EDEDED"
-    C.sym C.padding (C.px 20)
-    "background" -: "linear-gradient(to bottom right, #3A2A85 30%, transparent)"
-    C.textAlign C.center
   ".topics" ? do
     "flex" -: "1"
     C.sym C.padding (C.px 20)
@@ -96,9 +73,6 @@ mainStyle = do
     "background" -: "linear-gradient(to top left, #222222, #333333)"
     "border" -: "1px solid #333333"
   traverse_ topicCss topics
-  ".footer" ? do
-    C.color "#888888"
-    C.textAlign C.center
 
 snippetCss :: C.Css
 snippetCss = do
@@ -124,9 +98,6 @@ topicHtml Topic{topicName, topicTitle, topicContent} = do
 topicCss :: Topic -> C.Css
 topicCss Topic{topicName, topicStyle} =
   fromString (".topic-" <> topicName) ? topicStyle
-
-styleEmbedCss :: C.Css -> H.Html
-styleEmbedCss = H.style . H.preEscapedToHtml . C.renderWith C.compact []
 
 ndash :: H.Html
 ndash = "–"

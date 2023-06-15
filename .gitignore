@@ -6,6 +6,9 @@ cabal.sandbox.config
 cabal.project.local
 .ghc.environment*
 
+# direnv
+.direnv
+
 # Profiling
 *.prof
 
@@ -22,3 +25,5 @@ tags
 
 # Output
 out
+
+error.*

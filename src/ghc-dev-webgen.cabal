@@ -9,19 +9,31 @@ executable ghc-dev-webgen
   main-is:
     Main.hs
 
+  other-modules:
+    Pages.Common
+    Pages.DH
+    Pages.Graph
+
   build-depends:
     base,
     blaze-html,
     blaze-markup,
     bytestring,
+    binary,
     clay,
     containers,
     mtl,
-    reflection,
     text,
     filepath,
+    neat-interpolation,
+    generic-lens,
+    lens,
     directory,
-    time
+    time,
+    typed-process,
+    xeno,
+    xmlbf-xeno,
+    xmlbf
 
   ghc-options:
     -Wall
