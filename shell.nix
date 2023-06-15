@@ -1,4 +1,4 @@
 { pkgs ? import <nixpkgs> {} }:
 pkgs.mkShell {
-  buildInputs = [ pkgs.ghc pkgs.cabal-install ];
+  buildInputs = with pkgs; [ ghc cabal-install haskellPackages.happy pkg-config glib cairo pango haskellPackages.haskell-language-server ];
 }

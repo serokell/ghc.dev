@@ -9,6 +9,9 @@ executable ghc-dev-webgen
   main-is:
     Main.hs
 
+  other-modules:
+    Pages.DH
+
   build-depends:
     base,
     blaze-html,
@@ -17,9 +20,14 @@ executable ghc-dev-webgen
     clay,
     containers,
     mtl,
-    reflection,
     text,
     filepath,
+    diagrams,
+    diagrams-lib,
+    diagrams-cairo,
+    neat-interpolation,
+    generic-lens,
+    lens,
     directory,
     time
 
