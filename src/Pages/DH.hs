@@ -19,12 +19,6 @@ import GHC.Generics ( Generic )
 import Control.Monad.State
 import NeatInterpolation
 import Data.Text.IO qualified as TIO
-import Diagrams.Prelude qualified as D
-import Diagrams.TwoD.Text qualified as D
-import Diagrams.Backend.Cairo.CmdLine
-import Diagrams.Backend.Cairo
-import Diagrams.Backend.Cairo.Text
-import GHC.IO (unsafePerformIO)
 
 newtype GoalId =
   MkGoalId {
@@ -168,7 +162,7 @@ roadmap = runRoadmapBuilder mdo
   visibleForall <- mkGoal
     Goalpost {
       title = "Visible forall in types of terms",
-      description = "The `forall x -> t` quantifier in types of terms",
+      description = "The `forall x -&gt; t` quantifier in types of terms",
       completed = False
     } [typeSyntaxInTerms]
 
@@ -178,7 +172,9 @@ extractToGraphviz :: Roadmap -> Text
 extractToGraphviz MkRoadmap{dependencies, goals} =
   [trimming|
     digraph G {
+      ranksep=0.5;
       node [shape = box];
+      fontname="Comic Sans MS"; // don't work?
       // goals
       $renderedGoals;
       // graph
@@ -188,37 +184,29 @@ extractToGraphviz MkRoadmap{dependencies, goals} =
   renderedGoals = T.intercalate ";\n" (map extractGoalInfo (Map.toList goals))
   renderedGraph = T.intercalate ";\n" (map extractDependencyGraph (Set.toList dependencies))
 
-  extractGoalInfo (showT -> nodeId, Goalpost{title, completed}) =
-    [trimming|"$nodeId" [label="$title", color="$color"]|] where
+  extractGoalInfo (showT -> nodeId, Goalpost{title, description, completed}) =
+    [trimming|
+      "$nodeId" [
+        label=<
+          <FONT POINT-SIZE="20"> <B> $title </B> </FONT> <BR ALIGN="CENTER"/>
+          $description
+        >,
+        fillcolor="#222222:#333333",
+        fontcolor="#CDCDCF",
+        style="filled",
+        gradientangle=315,
+        color="$color"
+        ]
+      |] where
     color = if completed then "violet" else "black"
 
 
   extractDependencyGraph (showT -> nodeParent, showT -> nodeChild) =
-    [trimming|"$nodeParent" -> "$nodeChild"|]
+    [trimming|
+      "$nodeParent" -> "$nodeChild" [color="#cdcdcf"]
+      |]
 
   showT = T.pack . show
 
 testGraphviz :: IO ()
 testGraphviz = TIO.writeFile "out/res.dot" (extractToGraphviz roadmap)
-
-
-extractToDiagrams :: Roadmap -> D.Diagram Cairo
-extractToDiagrams r = D.font "FreeMono" $ tournament (r ^. #goals . to Map.elems)
-
-node :: Int -> D.Diagram Cairo
-node n = D.text (show n) D.# D.fontSizeL 0.2 D.# D.fc D.white
-      <> D.circle 0.2 D.# D.fc D.green D.# D.named n
-
-tournament :: [Goal] -> D.Diagram Cairo
-tournament goals = D.vsep 15 (map renderGoal goals)
-
-renderGoal :: Goal -> D.Diagram Cairo
-renderGoal goal = mkText (goal ^. #title) D.=== mkText (goal ^. #description)
-
-
-mkText :: T.Text -> D.QDiagram Cairo D.V2 Double D.Any
-mkText t = unsafePerformIO do
-  textVisualBoundedIO (D.fontSizeL 0.2 $ D.font "DejaVu Sans" mempty) (D.Text mempty D.BaselineText (T.unpack t) )
-
-testDiagrams :: IO ()
-testDiagrams = renderCairo "out/res.svg" (D.mkHeight 1500) (extractToDiagrams roadmap)
