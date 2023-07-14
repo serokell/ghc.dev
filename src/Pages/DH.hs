@@ -162,7 +162,7 @@ roadmap = runRoadmapBuilder mdo
   visibleForall <- mkGoal
     Goalpost {
       title = "Visible forall in types of terms",
-      description = "The `forall x -&gt; t` quantifier in types of terms",
+      description = "The `forall x -> t` quantifier in types of terms",
       completed = False
     } [typeSyntaxInTerms]
 
@@ -188,8 +188,11 @@ extractToGraphviz MkRoadmap{dependencies, goals} =
     [trimming|
       "$nodeId" [
         label=<
-          <FONT POINT-SIZE="20"> <B> $title </B> </FONT> <BR ALIGN="CENTER"/>
-          $description
+          <FONT POINT-SIZE="20"><B>
+          $title
+          </B></FONT>
+          <BR/>
+          $descr
         >,
         fillcolor="#222222:#333333",
         fontcolor="#CDCDCF",
@@ -199,6 +202,12 @@ extractToGraphviz MkRoadmap{dependencies, goals} =
         ]
       |] where
     color = if completed then "violet" else "black"
+
+    descr = T.concatMap escapeDescription description
+
+    escapeDescription '\n' = "\n<BR/>\n"
+    escapeDescription '>'  = "&gt;"
+    escapeDescription ch   = T.singleton ch
 
 
   extractDependencyGraph (showT -> nodeParent, showT -> nodeChild) =
