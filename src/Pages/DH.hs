@@ -7,60 +7,21 @@
 {-# LANGUAGE QuasiQuotes #-}
 
 module Pages.DH where
-import Control.Lens
-import Data.Generics.Labels ()
-import Data.Set qualified as Set
-import Data.Set (Set)
-import Data.Map qualified as Map
-import Data.Map (Map)
-import Data.Text qualified as T
-import Data.Text (Text)
-import GHC.Generics ( Generic )
-import Control.Monad.State
-import NeatInterpolation
-import Data.Text.IO qualified as TIO
-
-newtype GoalId =
-  MkGoalId {
-    rawId :: Int
-  } deriving newtype (Show, Eq, Ord)
-
-data Goal =
-  Goalpost {
-    title :: Text,
-    description :: Text,
-    completed :: Bool
-  } deriving (Show, Generic)
-
-data Roadmap =
-  MkRoadmap {
-    root :: GoalId,
-    dependencies :: Set (GoalId, GoalId),
-    goals :: Map GoalId Goal
-  } deriving (Show, Generic)
-
-data BuilderState =
-  MkBuilderState {
-    dependencies :: Set (GoalId, GoalId),
-    goals :: Map GoalId Goal,
-    nextId :: Int
-  } deriving (Show, Generic)
-
-type RoadmapBuilder = State BuilderState
-
-runRoadmapBuilder :: RoadmapBuilder GoalId -> Roadmap
-runRoadmapBuilder action = MkRoadmap {..} where
-  (root, MkBuilderState {dependencies, goals}) = runState action (MkBuilderState mempty mempty 0)
-
-mkGoal :: Goal -> [GoalId] -> RoadmapBuilder GoalId
-mkGoal goal subgoals = do
-  goalId <- #nextId <<+= 1 <&> MkGoalId
-  #goals . at goalId ?= goal
-  #dependencies <>= Set.fromList [(goalId, subgoalId) | subgoalId <- subgoals]
-  pure goalId
+import Data.ByteString.Lazy qualified as BS
+import Pages.Graph
 
 roadmap :: Roadmap
 roadmap = runRoadmapBuilder mdo
+  setGoalLevels [
+    [dh],
+    [dependentProducts, dependentSums],
+    [openEvaluator, closedEvaluatior],
+    [typelevelCleanup],
+    [visibleForall],
+    [typeSyntaxInTerms],
+    [standaloneKindSignatures, invisibleBindersInTypes]
+    ]
+
   dh <- mkGoal
     Goalpost {
       title = "Dependent Haskell",
@@ -168,54 +129,5 @@ roadmap = runRoadmapBuilder mdo
 
   pure dh
 
-extractToGraphviz :: Roadmap -> Text
-extractToGraphviz MkRoadmap{dependencies, goals} =
-  [trimming|
-    digraph G {
-      ranksep=0.5;
-      node [shape = box];
-      fontname="Comic Sans MS"; // don't work?
-      // goals
-      $renderedGoals;
-      // graph
-      $renderedGraph;
-    }
-  |] where
-  renderedGoals = T.intercalate ";\n" (map extractGoalInfo (Map.toList goals))
-  renderedGraph = T.intercalate ";\n" (map extractDependencyGraph (Set.toList dependencies))
-
-  extractGoalInfo (showT -> nodeId, Goalpost{title, description, completed}) =
-    [trimming|
-      "$nodeId" [
-        label=<
-          <FONT POINT-SIZE="20"><B>
-          $title
-          </B></FONT>
-          <BR/>
-          $descr
-        >,
-        fillcolor="#222222:#333333",
-        fontcolor="#CDCDCF",
-        style="filled",
-        gradientangle=315,
-        color="$color"
-        ]
-      |] where
-    color = if completed then "violet" else "black"
-
-    descr = T.concatMap escapeDescription description
-
-    escapeDescription '\n' = "\n<BR/>\n"
-    escapeDescription '>'  = "&gt;"
-    escapeDescription ch   = T.singleton ch
-
-
-  extractDependencyGraph (showT -> nodeParent, showT -> nodeChild) =
-    [trimming|
-      "$nodeParent" -> "$nodeChild" [color="#cdcdcf"]
-      |]
-
-  showT = T.pack . show
-
 testGraphviz :: IO ()
-testGraphviz = TIO.writeFile "out/res.dot" (extractToGraphviz roadmap)
+testGraphviz = BS.writeFile "out/res.svg" =<< extractToSvg roadmap

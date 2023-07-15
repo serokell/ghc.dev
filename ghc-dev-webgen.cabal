@@ -11,6 +11,7 @@ executable ghc-dev-webgen
 
   other-modules:
     Pages.DH
+    Pages.Graph
 
   build-depends:
     base,
@@ -26,7 +27,8 @@ executable ghc-dev-webgen
     generic-lens,
     lens,
     directory,
-    time
+    time,
+    typed-process
 
   hs-source-dirs:
     src
