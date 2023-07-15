@@ -10,6 +10,7 @@ executable ghc-dev-webgen
     Main.hs
 
   other-modules:
+    Pages.Common
     Pages.DH
     Pages.Graph
 

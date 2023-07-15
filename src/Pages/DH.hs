@@ -6,8 +6,16 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE QuasiQuotes #-}
 
-module Pages.DH where
-import Data.ByteString.Lazy qualified as BS
+module Pages.DH (generateDhPage) where
+
+import Data.Time.Clock
+import qualified Text.Blaze.Html5 as H
+import Text.Blaze.Html5 ((!))
+import qualified Text.Blaze.Html5.Attributes as A
+import qualified Clay as C
+import qualified Data.ByteString.Lazy as BS.L
+
+import Pages.Common
 import Pages.Graph
 
 roadmap :: Roadmap
@@ -126,5 +134,37 @@ roadmap = runRoadmapBuilder mdo
 
   pure dh
 
-testGraphviz :: IO ()
-testGraphviz = BS.writeFile "out/res.svg" =<< extractToSvg roadmap
+generateDhPage :: UTCTime -> IO H.Html
+generateDhPage time = do
+  roadmapSvg <- extractToSvg roadmap
+  return (dhPage time roadmapSvg)
+
+dhPage :: UTCTime -> BS.L.ByteString -> H.Html
+dhPage time roadmapSvg = do
+  (H.docTypeHtml ! A.lang "en") do
+    H.head do
+      H.meta ! A.charset "utf-8"
+      H.meta
+        ! A.name "viewport"
+        ! A.content "width=device-width, initial-scale=1.0"
+      H.title "GHC Development"
+      styleEmbedCss dhStyle
+    H.body do
+      (H.div ! A.class_ "header") do
+        headerHtml "dependent types roadmap"
+      (H.div ! A.class_ "roadmap") do
+        H.unsafeLazyByteString roadmapSvg
+      (H.div ! A.class_ "footer") do
+        footerHtml time
+
+dhStyle :: C.Css
+dhStyle = do
+  commonStyle
+  ".roadmap" C.? do
+    C.display C.flex
+    C.flexDirection C.column
+    C.alignItems C.center
+  ".roadmap svg" C.? do
+    C.padding (C.px 20) (C.px 20) (C.px 20) (C.px 20)
+    -- C.border C.solid (C.px 1) C.magenta
+    C.width (C.pct 80)

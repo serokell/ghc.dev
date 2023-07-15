@@ -20,7 +20,7 @@ import GHC.Generics ( Generic )
 import Control.Monad.State
 import NeatInterpolation
 import System.Process.Typed
-import Data.ByteString.Lazy qualified as BS
+import Data.ByteString.Lazy qualified as BS.L
 import Control.Arrow ((>>>))
 
 newtype GoalId =
@@ -144,14 +144,15 @@ extractToGraphviz MkRoadmap{dependencies, goalLevels, goals} =
   showT :: Show a => a -> Text
   showT = T.pack . show
 
-extractToSvg :: Roadmap -> IO BS.ByteString
+extractToSvg :: Roadmap -> IO BS.L.ByteString
 extractToSvg roadmap = do
   (exitCode, svg) <- readProcessStdout dot
+  -- TODO: preprocess svg to remove <title> nodes
   case exitCode of
     ExitSuccess -> pure svg
     ExitFailure _ -> do
-      BS.writeFile "error.dot" input
+      BS.L.writeFile "error.dot" input
       fail "Cannot create SVG from dot. Dumped dot-file to the ./error.dot"
   where
     dot =  setStdin (byteStringInput input) $ proc "dot" ["-Tsvg"]
-    input = BS.fromStrict $ T.encodeUtf8 $ extractToGraphviz roadmap
+    input = BS.L.fromStrict $ T.encodeUtf8 $ extractToGraphviz roadmap
