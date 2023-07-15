@@ -13,13 +13,10 @@ import Pages.Graph
 roadmap :: Roadmap
 roadmap = runRoadmapBuilder mdo
   setGoalLevels [
-    [dh],
-    [dependentProducts, dependentSums],
-    [openEvaluator, closedEvaluatior],
-    [typelevelCleanup],
-    [visibleForall],
-    [typeSyntaxInTerms],
-    [standaloneKindSignatures, invisibleBindersInTypes]
+      [openEvaluator, closedEvaluatior],
+      [typelevelCleanup],
+      [typeSyntaxInTerms],
+      [standaloneKindSignatures, invisibleBindersInTypes]
     ]
 
   dh <- mkGoal

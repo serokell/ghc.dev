@@ -104,7 +104,6 @@ extractToGraphviz MkRoadmap{dependencies, goalLevels, goals} =
     [trimming|
       "$nodeId" [
         label=<
-
           <table border="0" align="LEFT">
           <tr><td ALIGN="LEFT"><font face="Ubuntu" point-size="20"><b>$title</b></font></td></tr>
           <tr><td balign="LEFT" ALIGN="TEXT"><font face="Ubuntu" point-size="16">$descr</font></td></tr>
