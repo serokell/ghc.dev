@@ -19,6 +19,7 @@ executable ghc-dev-webgen
     blaze-html,
     blaze-markup,
     bytestring,
+    binary,
     clay,
     containers,
     mtl,
@@ -29,7 +30,10 @@ executable ghc-dev-webgen
     lens,
     directory,
     time,
-    typed-process
+    typed-process,
+    xeno,
+    xmlbf-xeno,
+    xmlbf
 
   hs-source-dirs:
     src
