@@ -132,7 +132,7 @@ extractToGraphviz MkRoadmap{dependencies, goalLevels, goals} =
       go (ch : rest) = escapeChar ch <> go rest
 
       goCloseMono [] = "</font>"
-      goCloseMono ('`' : rest) = " </font>" <> go rest
+      goCloseMono ('`' : rest) = "</font>  " <> go rest
       goCloseMono (ch : rest) = escapeChar ch <> goCloseMono rest
 
       escapeChar '\n' = "<br/>"
