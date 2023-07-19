@@ -41,7 +41,7 @@ newtype GoalId =
 data Goal =
   Goalpost {
     title :: Text,
-    description :: Text,
+    subtitle :: Text,
     completed :: Bool
   } deriving (Show, Generic)
 
@@ -88,8 +88,8 @@ extractToGraphviz MkRoadmap{dependencies, goalLevels, goals} =
           shape = box,
           fillcolor="#222222:#333333",
           fontcolor="#CDCDCF",
-          style="filled",
-          gradientangle=315
+          style="radial",
+          gradientangle=135
         ];
       bgcolor="#222222";
       // goals
@@ -110,35 +110,20 @@ extractToGraphviz MkRoadmap{dependencies, goalLevels, goals} =
   orderGoals = renderLevelPoints goalLevelPoints
   goalLevelPoints = map (\x -> "mock" <> showT x) [1 .. length goalLevels]
 
-  extractGoalInfo (showT -> nodeId, Goalpost{title, description, completed}) =
+  extractGoalInfo (showT -> nodeId, Goalpost{title, subtitle, completed}) =
     [trimming|
       "$nodeId" [
         label=<
-          <table border="0" align="LEFT">
-          <tr><td ALIGN="LEFT"><font point-size="20"><b>$title</b></font></td></tr>
-          <tr><td balign="LEFT" ALIGN="TEXT"><font point-size="16">$descr</font></td></tr>
+          <table border="0">
+          <tr><td><font point-size="14">$title</font></td></tr>
+          <tr><td><font point-size="12">$subtitle</font></td></tr>
           </table>
         >,
         color="$color"
         ]
       |] where
-    color = if completed then "violet" else "black"
+    color = if completed then "#593fcf" else "#333333"
 
-    descr = escapeDescription description
-
-    escapeDescription = T.pack . go . T.unpack where
-      go [] = []
-      go ('`' : rest) = "<font face=\"monospace\">" <> goCloseMono rest
-      go (ch : rest) = escapeChar ch <> go rest
-
-      goCloseMono [] = "</font>"
-      goCloseMono ('`' : rest) = "</font>  " <> go rest
-      goCloseMono (ch : rest) = escapeChar ch <> goCloseMono rest
-
-      escapeChar '\n' = "<br/>"
-      escapeChar '>'  = "&gt;"
-
-      escapeChar ch   = pure ch
   extractGoalLevel (goalLevel, map showT >>> semicolonSeparated -> oneRankGoals) =
     [trimming|{ rank="same"; $goalLevel; $oneRankGoals }|]
 

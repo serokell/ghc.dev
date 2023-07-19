@@ -13,6 +13,7 @@ import qualified Text.Blaze.Html5 as H
 import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Clay as C
+import Clay ((?), (-:))
 import qualified Data.ByteString.Lazy as BS.L
 
 import Pages.Common
@@ -24,69 +25,70 @@ roadmap = runRoadmapBuilder mdo
       [openEvaluator, closedEvaluatior],
       [typelevelCleanup],
       [typeSyntaxInTerms],
-      [standaloneKindSignatures, invisibleBindersInTypes]
+      [invisibleBindersInTypes],
+      [standaloneKindSignatures]
     ]
 
   dh <- mkGoal
     Goalpost {
       title = "Dependent Haskell",
-      description = "Dependent types in GHC",
+      subtitle = "dependent types in GHC",
       completed = False
     } [dependentQuantifiaction, functionPromotion, typelevelCleanup]
 
   dependentQuantifiaction <- mkGoal
     Goalpost {
       title = "Dependent retained quantifiers",
-      description = "Types that refer to terms",
+      subtitle = "types that refer to terms",
       completed = False
     } [dependentProducts, dependentSums]
 
   dependentProducts <- mkGoal
     Goalpost {
       title = "Dependent products",
-      description = "Π-types",
+      subtitle = "Π-types",
       completed = False
     } [dependentCore, visibleForall]
 
   dependentSums <- mkGoal
     Goalpost {
       title = "Dependent sums",
-      description = "Σ-types",
+      subtitle = "Σ-types",
       completed = False
     } [dependentCore]
 
   dependentCore <- mkGoal
     Goalpost {
       title = "Dependent Core language",
-      description = "Formalism and implementation\nof the dependently typed Core language",
+      subtitle = "formalism and implementation",
       completed = False
     } []
 
   functionPromotion <- mkGoal
     Goalpost {
       title = "Function promotion",
-      description = "Promote term-level functions",
+      subtitle = "promote term-level functions",
       completed = False
     } [closedEvaluatior, openEvaluator]
 
   closedEvaluatior <- mkGoal
     Goalpost {
-      title = "Closed evaluator",
-      description = "High-performance closed term evaluator\nusing bytecode or native code",
+      title = "Closed term evaluator",
+      subtitle = "using bytecode or native code",
       completed = False
     } []
 
   openEvaluator <- mkGoal
     Goalpost {
-      title = "Open evaluator",
-      description = "Open term evaluator based\non normalization by evaluation",
+      title = "Open term evaluator",
+      subtitle = "normalization by evaluation",
       completed = False
     } []
 
   typelevelCleanup <- mkGoal
     Goalpost {
-      title = "Type-level cleanup",
-      description = "Clean up existing type-level programming features",
+      title = "Clean up the language",
+      subtitle = "preparations for dependent types",
       completed = False
     }
     [
@@ -100,35 +102,35 @@ roadmap = runRoadmapBuilder mdo
   standaloneKindSignatures <- mkGoal
     Goalpost {
       title = "Standalone kind signatures",
-      description = "Specify the kind and enable polymorphic recursion\nusing a `type T :: k` signature",
+      subtitle = "replacement for CUSKs",
       completed = True
     } []
 
   invisibleBindersInTypes <- mkGoal
     Goalpost {
-      title = "Invisible binders in type declarations",
-      description = "@k-binders in data, newytpe, class, type synonym,\nand type/data family declarations",
+      title = "Invisible binders in types",
+      subtitle = "@k-binders in type declarations",
       completed = True
     } []
 
   invisibleBindersInTerms <- mkGoal
     Goalpost {
-      title = "Invisible binders in term-level expressions",
-      description = "@a-binders in function equation left-hand sides and lambdas",
+      title = "Invisible binders in terms",
+      subtitle = "@a-binders in lambdas",
       completed = False
     } []
 
   typeSyntaxInTerms <- mkGoal
     Goalpost {
-      title = "Type syntax in terms",
-      description = "Construct types in term-level contexts",
+      title = "Syntactic unification",
+      subtitle = "type syntax in terms",
       completed = False
     } [visibleForall]
 
   visibleForall <- mkGoal
     Goalpost {
-      title = "Visible forall in types of terms",
-      description = "The `forall x -> t` quantifier in types of terms",
+      title = "Visible forall",
+      subtitle = "in types of terms",
       completed = False
     } [typeSyntaxInTerms]
 
@@ -160,11 +162,14 @@ dhPage time roadmapSvg = do
 dhStyle :: C.Css
 dhStyle = do
   commonStyle
-  ".roadmap" C.? do
+  ".roadmap" ? do
     C.display C.flex
     C.flexDirection C.column
     C.alignItems C.center
-  ".roadmap svg" C.? do
+    "border" -: "1px solid #333333"
+  ".roadmap svg" ? do
     C.padding (C.px 20) (C.px 20) (C.px 20) (C.px 20)
     -- C.border C.solid (C.px 1) C.magenta
-    C.width (C.pct 80)
+    C.width (C.pct 90)
+    C.minWidth (C.px 600)
+    C.maxWidth (C.px 1200)
