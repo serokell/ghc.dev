@@ -23,7 +23,7 @@ roadmap :: Roadmap
 roadmap = runRoadmapBuilder mdo
   setGoalLevels [
       [dh],
-      [dependentQuantification, functionPromotion],
+      [dependentQuantification, universalPromotion],
       [typelevelLambdas],
       [openEvaluator, closedEvaluatior],
       [typelevelCleanup],
@@ -32,8 +32,9 @@ roadmap = runRoadmapBuilder mdo
       [standaloneKindSignatures],
       [syntacticUnification],
       [punFreeCode],
-      [noStarIsType],
-      [noListTuplePuns, whitespaceSensitiveOperators],
+      [noListTuplePuns],
+      [whitespaceSensitiveOperators],
+      [noStarIsType, noKindVars],
       [typeInType]
     ]
 
@@ -42,7 +43,7 @@ roadmap = runRoadmapBuilder mdo
       title = "Dependent Haskell",
       subtitle = "dependent types in GHC",
       completed = False
-    } [dependentQuantification, functionPromotion, typelevelCleanup]
+    } [dependentQuantification, universalPromotion, typelevelCleanup]
 
   dependentQuantification <- mkGoal
     Goalpost {
@@ -63,7 +64,7 @@ roadmap = runRoadmapBuilder mdo
       title = "Dependent sums",
       subtitle = "Σ-types",
       completed = False
-    } [dependentCore]
+    } [dependentCore, existentialQuantification]
 
   dependentCore <- mkGoal
     Goalpost {
@@ -71,6 +72,61 @@ roadmap = runRoadmapBuilder mdo
       subtitle = "formalism and implementation",
       completed = False
     } []
+
+  universalPromotion <- mkGoal
+    Goalpost {
+      title = "Universal promotion",
+      subtitle = "promote all terms",
+      completed = False
+    }
+    [
+      functionPromotion,
+      literalPromotion,
+      unboxedPromotion,
+      constraintPromotion
+    ]
+
+  literalPromotion <- mkGoal
+    Goalpost {
+      title = "Promote literals",
+      subtitle = "numeric, char, string",
+      completed = False
+    } [charPromotion, natPromotion, constrainedTypeFamilies]
+
+  charPromotion <- mkGoal
+    Goalpost {
+      title = "Promote Char",
+      subtitle = "and character literals",
+      completed = True
+    } []
+
+  natPromotion <- mkGoal
+    Goalpost {
+      title = "Promote Natural",
+      subtitle = "unify it with Nat",
+      completed = True
+    } []
+
+  unboxedPromotion <- mkGoal
+    Goalpost {
+      title = "Promote unboxed types",
+      subtitle = "RuntimeRep ≠ LiftedRep",
+      completed = False
+    } [homogeneousEquality]
+
+  homogeneousEquality <- mkGoal
+    Goalpost {
+      title = "Homogeneous equality",
+      subtitle = "instead of heterogeneous",
+      completed = False
+    } []
+
+  constraintPromotion <- mkGoal
+    Goalpost {
+      title = "Promote classes",
+      subtitle = "constraints and dictionaries",
+      completed = False
+    } [functionPromotion, constrainedTypeFamilies]
 
   functionPromotion <- mkGoal
     Goalpost {
@@ -108,8 +164,41 @@ roadmap = runRoadmapBuilder mdo
     }
     [
       invisibleBinders,
-      visibleForall
+      visibleForall,
+      existentialQuantification,
+      unsaturatedTypeFamilies,
+      constrainedTypeFamilies,
+      noKindVars,
+      noCusks
     ]
+
+  existentialQuantification <- mkGoal
+    Goalpost {
+      title = "Existential quantification",
+      subtitle = "first-class exists quantifier",
+      completed = False
+    } []
+
+  unsaturatedTypeFamilies <- mkGoal
+    Goalpost {
+      title = "Unsaturated type families",
+      subtitle = "partial application in types",
+      completed = False
+    } [modifiersSyntax]
+
+  constrainedTypeFamilies <- mkGoal
+    Goalpost {
+      title = "Constrained type families",
+      subtitle = "constraints in kinds",
+      completed = False
+    } []
+
+  modifiersSyntax <- mkGoal
+    Goalpost {
+      title = "Modifiers syntax",
+      subtitle = "generalized modifiers",
+      completed = False
+    } []
 
   standaloneKindSignatures <- mkGoal
     Goalpost {
@@ -196,14 +285,21 @@ roadmap = runRoadmapBuilder mdo
       title = "Pun warnings",
       subtitle = "warn on puns and pun bindings",
       completed = False
-    } []
+    } [namespaceSpecifiedImports]
 
   visibleForall <- mkGoal
     Goalpost {
       title = "Visible forall",
       subtitle = "in types of terms",
       completed = False
-    } [embedTypes, nestedGadtForalls, syntacticUnification]
+    } [visCoercions, embedTypes, nestedGadtForalls, syntacticUnification]
+
+  visCoercions <- mkGoal
+    Goalpost {
+      title = "Visibility coercions",
+      subtitle = "in the Core language",
+      completed = True
+    } []
 
   nestedGadtForalls <- mkGoal
     Goalpost {
@@ -254,14 +350,14 @@ roadmap = runRoadmapBuilder mdo
       completed = True
     } []
 
-  _noKindVars <- mkGoal
+  noKindVars <- mkGoal
     Goalpost {
       title = "Unify type and kind variables",
       subtitle = "consistent quantification rules",
       completed = True
     } [typeInType]
 
-  _noCusks <- mkGoal
+  noCusks <- mkGoal
     Goalpost {
       title = "Deprecate CUSKs",
       subtitle = "complete user-supplied kinds",
