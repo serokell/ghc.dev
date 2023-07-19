@@ -362,7 +362,7 @@ roadmap = runRoadmapBuilder mdo
       title = "Deprecate CUSKs",
       subtitle = "complete user-supplied kinds",
       completed = False
-    } [standaloneKindSignatures]
+    } [invisibleBindersInTypes]
 
   typeInType <- mkGoal
     Goalpost {
