@@ -22,11 +22,19 @@ import Pages.Graph
 roadmap :: Roadmap
 roadmap = runRoadmapBuilder mdo
   setGoalLevels [
+      [dh],
+      [dependentQuantification, functionPromotion],
+      [typelevelLambdas],
       [openEvaluator, closedEvaluatior],
       [typelevelCleanup],
-      [typeSyntaxInTerms],
-      [invisibleBindersInTypes],
-      [standaloneKindSignatures]
+      [invisibleBindersInFunctions],
+      [invisibleBindersInTypes, invisibleBindersInConstructors],
+      [standaloneKindSignatures],
+      [syntacticUnification],
+      [punFreeCode],
+      [noStarIsType],
+      [noListTuplePuns, whitespaceSensitiveOperators],
+      [typeInType]
     ]
 
   dh <- mkGoal
@@ -34,9 +42,9 @@ roadmap = runRoadmapBuilder mdo
       title = "Dependent Haskell",
       subtitle = "dependent types in GHC",
       completed = False
-    } [dependentQuantifiaction, functionPromotion, typelevelCleanup]
+    } [dependentQuantification, functionPromotion, typelevelCleanup]
 
-  dependentQuantifiaction <- mkGoal
+  dependentQuantification <- mkGoal
     Goalpost {
       title = "Dependent retained quantifiers",
       subtitle = "types that refer to terms",
@@ -69,7 +77,7 @@ roadmap = runRoadmapBuilder mdo
       title = "Function promotion",
       subtitle = "promote term-level functions",
       completed = False
-    } [closedEvaluatior, openEvaluator]
+    } [closedEvaluatior, openEvaluator, typelevelLambdas]
 
   closedEvaluatior <- mkGoal
     Goalpost {
@@ -85,6 +93,13 @@ roadmap = runRoadmapBuilder mdo
       completed = False
     } []
 
+  typelevelLambdas <- mkGoal
+    Goalpost {
+      title = "Type-level lambdas",
+      subtitle = "first-class functions in types",
+      completed = False
+    } [dependentCore, openEvaluator]
+
   typelevelCleanup <- mkGoal
     Goalpost {
       title = "Clean up the language",
@@ -92,11 +107,8 @@ roadmap = runRoadmapBuilder mdo
       completed = False
     }
     [
-      standaloneKindSignatures,
-      invisibleBindersInTypes,
-      invisibleBindersInTerms,
-      visibleForall,
-      typeSyntaxInTerms
+      invisibleBinders,
+      visibleForall
     ]
 
   standaloneKindSignatures <- mkGoal
@@ -106,33 +118,162 @@ roadmap = runRoadmapBuilder mdo
       completed = True
     } []
 
+  invisibleBinders <- mkGoal
+    Goalpost {
+      title = "Invisible type variable binders",
+      subtitle = "in types and terms",
+      completed = False
+    }
+    [
+      invisibleBindersInTypes,
+      invisibleBindersInFunctions,
+      invisibleBindersInConstructors
+    ]
+
   invisibleBindersInTypes <- mkGoal
     Goalpost {
       title = "Invisible binders in types",
       subtitle = "@k-binders in type declarations",
       completed = True
-    } []
+    } [standaloneKindSignatures]
 
-  invisibleBindersInTerms <- mkGoal
+  invisibleBindersInFunctions <- mkGoal
     Goalpost {
-      title = "Invisible binders in terms",
+      title = "Invisible binders in functions",
       subtitle = "@a-binders in lambdas",
       completed = False
     } []
 
-  typeSyntaxInTerms <- mkGoal
+  invisibleBindersInConstructors <- mkGoal
+    Goalpost {
+      title = "Invisible binders in constructors",
+      subtitle = "@a-binders in constructor patterns",
+      completed = True
+    } []
+
+  syntacticUnification <- mkGoal
     Goalpost {
       title = "Syntactic unification",
       subtitle = "type syntax in terms",
       completed = False
-    } [visibleForall]
+    }
+    [
+      termVariableCapture,
+      noStarIsType,
+      forallKeyword,
+      tildeOperator,
+      punFreeCode
+    ]
+
+  punFreeCode <- mkGoal
+    Goalpost {
+      title = "Support pun-free code",
+      subtitle = "to resolve ambiguities",
+      completed = False
+    }
+    [
+      namespaceSpecifiedImports,
+      noListTuplePuns,
+      punWarnings
+    ]
+
+  namespaceSpecifiedImports <- mkGoal
+    Goalpost {
+      title = "Namespace-specified imports",
+      subtitle = "filter imported names",
+      completed = False
+    } []
+
+  noListTuplePuns <- mkGoal
+    Goalpost {
+      title = "No list or tuple puns",
+      subtitle = "remove ambiguous built-in syntax",
+      completed = False
+    } []
+
+  punWarnings <- mkGoal
+    Goalpost {
+      title = "Pun warnings",
+      subtitle = "warn on puns and pun bindings",
+      completed = False
+    } []
 
   visibleForall <- mkGoal
     Goalpost {
       title = "Visible forall",
       subtitle = "in types of terms",
       completed = False
-    } [typeSyntaxInTerms]
+    } [embedTypes, nestedGadtForalls, syntacticUnification]
+
+  nestedGadtForalls <- mkGoal
+    Goalpost {
+      title = "Nested quantification in GADTs",
+      subtitle = "interleave foralls in constructors",
+      completed = False
+    } []
+
+  embedTypes <- mkGoal
+    Goalpost {
+      title = "Embed types",
+      subtitle = "into expressions",
+      completed = False
+    } []
+
+  termVariableCapture <- mkGoal
+    Goalpost {
+      title = "Term variable capture",
+      subtitle = "mention term variables in types",
+      completed = False
+    } []
+
+  noStarIsType <- mkGoal
+    Goalpost {
+      title = "No star kind syntax",
+      subtitle = "resolve conflict with operators",
+      completed = True
+    } [typeInType]
+
+  forallKeyword <- mkGoal
+    Goalpost {
+      title = "The forall keyword",
+      subtitle = "at the term level",
+      completed = False
+    } []
+
+  tildeOperator <- mkGoal
+    Goalpost {
+      title = "The tilde operator",
+      subtitle = "for equality constraints",
+      completed = True
+    } [whitespaceSensitiveOperators]
+
+  whitespaceSensitiveOperators <- mkGoal
+    Goalpost {
+      title = "Whitespace-sensitive operators",
+      subtitle = "prefix vs infix occurrences",
+      completed = True
+    } []
+
+  _noKindVars <- mkGoal
+    Goalpost {
+      title = "Unify type and kind variables",
+      subtitle = "consistent quantification rules",
+      completed = True
+    } [typeInType]
+
+  _noCusks <- mkGoal
+    Goalpost {
+      title = "Deprecate CUSKs",
+      subtitle = "complete user-supplied kinds",
+      completed = False
+    } [standaloneKindSignatures]
+
+  typeInType <- mkGoal
+    Goalpost {
+      title = "Unify types and kinds",
+      subtitle = "with the Type :: Type axiom",
+      completed = True
+    } []
 
   pure dh
 
