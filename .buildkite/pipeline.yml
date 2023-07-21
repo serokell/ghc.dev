@@ -5,7 +5,8 @@ env:
 
 steps:
   - commands:
-    - "nix-shell --run \"cabal v2-update && make\""
+    - "nix build"
+    - "cp -r --no-preserve=mode result/out out"
     label: "make"
     artifact_paths: "out/*"
   - wait

@@ -7,8 +7,6 @@ import Text.Blaze.Renderer.Utf8 (renderMarkup)
 import qualified Clay as C
 import qualified Clay.Media as C.Media
 import Clay ((?), (-:))
-import qualified Data.Text.IO as Text
-import qualified Data.Text.Encoding as Text
 import qualified Data.ByteString.Lazy as ByteString
 import Data.String (IsString(fromString))
 import Data.Foldable (traverse_)
@@ -28,11 +26,7 @@ main = do
     _ -> die "Usage: ghc-dev-webgen DIR"
   createDirectoryIfMissing True outputDir
   time <- getCurrentTime
-  putByteString (outputDir </> "index.html") (renderMarkup (mainPage time))
-
-putByteString :: FilePath -> ByteString.ByteString -> IO ()
-putByteString path s =
-  Text.writeFile path (Text.decodeUtf8 (ByteString.toStrict s))
+  ByteString.writeFile (outputDir </> "index.html") (renderMarkup (mainPage time))
 
 mainPage :: UTCTime -> H.Html
 mainPage time = do
