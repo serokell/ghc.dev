@@ -18,6 +18,7 @@ import Data.Map ( Map )
 import Data.Text qualified as T
 import Data.Text.Encoding qualified as T
 import Data.Text ( Text )
+import Data.Text.Lazy qualified as T.L
 import Data.Char ( isSpace )
 import Data.List qualified
 import Data.ByteString.Lazy qualified as BS.L
@@ -172,7 +173,7 @@ postProcessSvg = dfpos \_ -> \case
 
   Element "g" _ childrens -- Remove mock nodes
     | Just (Element _ _ [Text t]) <- Data.List.find isTitle childrens
-    , "mock" `T.isPrefixOf` t
+    , "mock" `T.L.isPrefixOf` t
     -> mempty
 
   Element "svg" attrs childrens -- remove "width" and "heigh" from svg node
