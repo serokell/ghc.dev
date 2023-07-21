@@ -23,14 +23,11 @@ executable ghc-dev-webgen
     directory,
     time
 
-  hs-source-dirs:
-    src
-
   ghc-options:
     -Wall
 
   default-language:
-    Haskell2010
+    GHC2021
 
   default-extensions:
     BangPatterns
