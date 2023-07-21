@@ -111,15 +111,11 @@ extractToGraphviz MkRoadmap{dependencies, goalLevels, goals} =
   orderGoals = renderLevelPoints goalLevelPoints
   goalLevelPoints = map (\x -> "mock" <> showT x) [1 .. length goalLevels]
 
-  extractGoalInfo (showT -> nodeId, Goalpost{title, subtitle, completed}) =
+  extractGoalInfo (showT -> nodeId, Goalpost{completed}) =
     [trimming|
       "$nodeId" [
-        label=<
-          <table border="0">
-          <tr><td><font point-size="14">$title</font></td></tr>
-          <tr><td><font point-size="12">$subtitle</font></td></tr>
-          </table>
-        >,
+        label="",
+        size = "0.75,1.25",
         color="$color"
         ]
       |] where
