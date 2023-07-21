@@ -36,6 +36,7 @@ executable ghc-dev-webgen
     xmlbf,
     gi-cairo,
     gi-cairo-render,
+    gi-cairo-connector,
     gi-pango,
     gi-pangocairo,
 

@@ -11,15 +11,18 @@ import Data.Time.Calendar
 import Data.String
 import Data.Text (Text)
 
-fontFamily :: Text
-fontFamily = "system-ui,-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Oxygen-Sans,Ubuntu,Cantarell,\"Helvetica Neue\",sans-serif"
+cssFontFamily :: Text
+cssFontFamily = "system-ui,-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Oxygen-Sans,Ubuntu,Cantarell,\"Helvetica Neue\",sans-serif"
+
+cairoFontFamily :: Text
+cairoFontFamily = "Ubuntu"
 
 commonStyle :: C.Css
 commonStyle = do
   C.body <> C.html ? do
     C.sym C.margin C.nil
     C.sym C.padding C.nil
-    "font-family" -: fontFamily
+    "font-family" -: cssFontFamily
   C.body ? do
     C.backgroundColor "#222222"
     C.color "#CDCDCF"

@@ -31,8 +31,13 @@ import NeatInterpolation
 import Xmlbf.Xeno
 import Xmlbf
 import Xeno.SAX ( skipDoctype )
+import Data.Int
+import qualified GI.Cairo.Render as Cairo
+import qualified GI.Cairo.Render.Connector as Cairo
+import qualified GI.Pango as Pango
+import qualified GI.PangoCairo as PangoCairo
 
-import Pages.Common ( fontFamily )
+import Pages.Common ( cairoFontFamily, cssFontFamily )
 
 newtype GoalId =
   MkGoalId {
@@ -177,7 +182,7 @@ postProcessSvg = dfpos \_ -> \case
 
   Element "text" attrs childrens -- setup font
     | Just "Times,serif" <- attrs ^. at "font-family"
-    -> Xmlbf.element "text" (attrs & at "font-family" .~ Just fontFamily) childrens
+    -> Xmlbf.element "text" (attrs & at "font-family" .~ Just cssFontFamily) childrens
 
   x | isTitle x -> mempty -- remove title from nodes
 
@@ -201,3 +206,41 @@ skipXml arg =
   where
     bs = skipBlanks arg
     skipBlanks = S8.dropWhile isSpace
+
+
+todo_cairo_example :: IO ()
+todo_cairo_example = do
+  fontDesc <- createFontDescription cairoFontFamily 12000
+  Cairo.withSVGSurface "hello.svg" 20000 20000 \svgSurface -> do
+    Cairo.renderWith svgSurface $ do
+      (_, _, _, renderText) <- createTextLayout fontDesc "Hello, World"
+      renderText (0, 0)
+    Cairo.surfaceFinish svgSurface
+
+createFontDescription :: Text -> Int -> IO Pango.FontDescription
+createFontDescription fontFamily fontSize = do
+  fontDescription <- Pango.fontDescriptionNew
+  Pango.fontDescriptionSetFamily fontDescription fontFamily
+  Pango.fontDescriptionSetSize fontDescription (fromIntegral fontSize)
+  Pango.fontDescriptionSetWeight fontDescription Pango.WeightNormal
+  return fontDescription
+
+createTextLayout :: Pango.FontDescription -> Text -> Cairo.Render (Int, Int, Int, (Double, Double) -> Cairo.Render ())
+createTextLayout fontDescription str = do
+  pangoLayout <- Cairo.getContext >>= PangoCairo.createLayout
+  Pango.layoutSetText pangoLayout str (-1)
+  Pango.layoutSetFontDescription pangoLayout (Just fontDescription)
+  (_logicalExtents, inkExtents) <- Pango.layoutGetExtents pangoLayout
+  inkW <- Pango.getRectangleWidth inkExtents
+  inkH <- Pango.getRectangleHeight inkExtents
+  pangoIter <- Pango.layoutGetIter pangoLayout
+  pangoBaseline <- Pango.layoutIterGetBaseline pangoIter
+  let renderText (x, y) = do
+        cairoContext <- Cairo.getContext
+        Cairo.moveTo x y
+        Cairo.setSourceRGB 0 0 1
+        PangoCairo.showLayout cairoContext pangoLayout
+  return (toPixels pangoBaseline, toPixels inkW, toPixels inkH, renderText)
+
+toPixels :: Int32 -> Int
+toPixels a = fromIntegral (a `div` Pango.SCALE)
