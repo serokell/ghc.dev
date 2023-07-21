@@ -403,7 +403,8 @@ dhStyle = do
     C.display C.flex
     C.flexDirection C.column
     C.alignItems C.center
-    "border" -: "1px solid #333333"
+    "outline" -: "1px solid #333333"
+    C.overflowX C.auto
   ".roadmap svg" ? do
     C.padding (C.px 20) (C.px 20) (C.px 20) (C.px 20)
     -- C.border C.solid (C.px 1) C.magenta
