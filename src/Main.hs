@@ -22,7 +22,6 @@ import System.Exit
 
 import Pages.DH (generateDhPage)
 import Pages.Common
-import Pages.Graph (todo_cairo_example)
 
 main :: IO ()
 main = do
@@ -34,7 +33,6 @@ main = do
   putByteString (outputDir </> "index.html") (renderMarkup (mainPage time))
   dhPage <- generateDhPage time
   putByteString (outputDir </> "dh.html") (renderMarkup dhPage)
-  todo_cairo_example
 
 putByteString :: FilePath -> ByteString.ByteString -> IO ()
 putByteString path s =
