@@ -25,6 +25,7 @@ import System.Process.Typed
 import NeatInterpolation
 import Xmlbf.Xeno
 import Xmlbf
+import qualified Text.Blaze.Html5 as H
 
 import Pages.Common ( cairoFontFamily )
 
@@ -37,8 +38,9 @@ data Goal =
   Goalpost {
     title :: Text,
     subtitle :: Text,
+    description :: H.Html,
     completed :: Bool
-  } deriving (Show, Generic)
+  } deriving (Generic)
 
 data Roadmap =
   MkRoadmap {
@@ -46,7 +48,7 @@ data Roadmap =
     goalLevels :: [[GoalId]],
     dependencies :: Set (GoalId, GoalId),
     goals :: Map GoalId Goal
-  } deriving (Show, Generic)
+  } deriving (Generic)
 
 data BuilderState =
   MkBuilderState {
@@ -54,7 +56,7 @@ data BuilderState =
     goalLevels :: [[GoalId]],
     goals :: Map GoalId Goal,
     nextId :: Int
-  } deriving (Show, Generic)
+  } deriving (Generic)
 
 type RoadmapBuilder = State BuilderState
 

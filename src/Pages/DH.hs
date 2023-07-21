@@ -5,6 +5,7 @@
 {-# LANGUAGE RecursiveDo #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE OverloadedRecordDot #-}
 
 module Pages.DH (generateDhPage) where
 
@@ -15,6 +16,7 @@ import qualified Text.Blaze.Html5.Attributes as A
 import qualified Clay as C
 import Clay ((?), (-:))
 import qualified Data.ByteString.Lazy as BS.L
+import Data.Foldable (traverse_)
 
 import Pages.Common
 import Pages.Graph
@@ -42,6 +44,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Dependent Haskell",
       subtitle = "dependent types in GHC",
+      description = H.p "TODO: description",
       completed = False
     } [dependentQuantification, universalPromotion, typelevelCleanup]
 
@@ -49,6 +52,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Dependent retained quantifiers",
       subtitle = "types that refer to terms",
+      description = H.p "TODO: description",
       completed = False
     } [dependentProducts, dependentSums]
 
@@ -56,6 +60,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Dependent products",
       subtitle = "Π-types",
+      description = H.p "TODO: description",
       completed = False
     } [dependentCore, visibleForall]
 
@@ -63,6 +68,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Dependent sums",
       subtitle = "Σ-types",
+      description = H.p "TODO: description",
       completed = False
     } [dependentCore, existentialQuantification]
 
@@ -70,6 +76,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Dependent Core language",
       subtitle = "formalism and implementation",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -77,6 +84,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Universal promotion",
       subtitle = "promote all terms",
+      description = H.p "TODO: description",
       completed = False
     }
     [
@@ -90,6 +98,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Promote literals",
       subtitle = "numeric, char, string",
+      description = H.p "TODO: description",
       completed = False
     } [charPromotion, natPromotion, constrainedTypeFamilies]
 
@@ -97,6 +106,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Promote Char",
       subtitle = "and character literals",
+      description = H.p "TODO: description",
       completed = True
     } []
 
@@ -104,6 +114,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Promote Natural",
       subtitle = "unify it with Nat",
+      description = H.p "TODO: description",
       completed = True
     } []
 
@@ -111,6 +122,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Promote unboxed types",
       subtitle = "RuntimeRep ≠ LiftedRep",
+      description = H.p "TODO: description",
       completed = False
     } [homogeneousEquality]
 
@@ -118,6 +130,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Homogeneous equality",
       subtitle = "instead of heterogeneous",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -125,6 +138,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Promote classes",
       subtitle = "constraints and dictionaries",
+      description = H.p "TODO: description",
       completed = False
     } [functionPromotion, constrainedTypeFamilies]
 
@@ -132,6 +146,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Function promotion",
       subtitle = "promote term-level functions",
+      description = H.p "TODO: description",
       completed = False
     } [closedEvaluatior, openEvaluator, typelevelLambdas]
 
@@ -139,6 +154,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Closed term evaluator",
       subtitle = "using bytecode or native code",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -146,6 +162,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Open term evaluator",
       subtitle = "normalization by evaluation",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -153,6 +170,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Type-level lambdas",
       subtitle = "first-class functions in types",
+      description = H.p "TODO: description",
       completed = False
     } [dependentCore, openEvaluator]
 
@@ -160,6 +178,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Clean up the language",
       subtitle = "preparations for dependent types",
+      description = H.p "TODO: description",
       completed = False
     }
     [
@@ -176,6 +195,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Existential quantification",
       subtitle = "first-class exists quantifier",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -183,6 +203,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Unsaturated type families",
       subtitle = "partial application in types",
+      description = H.p "TODO: description",
       completed = False
     } [modifiersSyntax]
 
@@ -190,6 +211,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Constrained type families",
       subtitle = "constraints in kinds",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -197,6 +219,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Modifiers syntax",
       subtitle = "generalized modifiers",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -204,6 +227,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Standalone kind signatures",
       subtitle = "replacement for CUSKs",
+      description = H.p "TODO: description",
       completed = True
     } []
 
@@ -211,6 +235,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Invisible type variable binders",
       subtitle = "in types and terms",
+      description = H.p "TODO: description",
       completed = False
     }
     [
@@ -223,6 +248,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Invisible binders in types",
       subtitle = "@k-binders in type declarations",
+      description = H.p "TODO: description",
       completed = True
     } [standaloneKindSignatures]
 
@@ -230,6 +256,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Invisible binders in functions",
       subtitle = "@a-binders in lambdas",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -237,6 +264,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Invisible binders in constructors",
       subtitle = "@a-binders in constructor patterns",
+      description = H.p "TODO: description",
       completed = True
     } []
 
@@ -244,6 +272,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Syntactic unification",
       subtitle = "type syntax in terms",
+      description = H.p "TODO: description",
       completed = False
     }
     [
@@ -258,6 +287,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Support pun-free code",
       subtitle = "to resolve ambiguities",
+      description = H.p "TODO: description",
       completed = False
     }
     [
@@ -270,6 +300,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Namespace-specified imports",
       subtitle = "filter imported names",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -277,6 +308,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "No list or tuple puns",
       subtitle = "remove ambiguous built-in syntax",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -284,6 +316,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Pun warnings",
       subtitle = "warn on puns and pun bindings",
+      description = H.p "TODO: description",
       completed = False
     } [namespaceSpecifiedImports]
 
@@ -291,6 +324,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Visible forall",
       subtitle = "in types of terms",
+      description = H.p "TODO: description",
       completed = False
     } [visCoercions, embedTypes, nestedGadtForalls, syntacticUnification]
 
@@ -298,6 +332,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Visibility coercions",
       subtitle = "in the Core language",
+      description = H.p "TODO: description",
       completed = True
     } []
 
@@ -305,6 +340,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Nested quantification in GADTs",
       subtitle = "interleave foralls in constructors",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -312,6 +348,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Embed types",
       subtitle = "into expressions",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -319,6 +356,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Term variable capture",
       subtitle = "mention term variables in types",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -326,6 +364,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "No star kind syntax",
       subtitle = "resolve conflict with operators",
+      description = H.p "TODO: description",
       completed = True
     } [typeInType]
 
@@ -333,6 +372,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "The forall keyword",
       subtitle = "at the term level",
+      description = H.p "TODO: description",
       completed = False
     } []
 
@@ -340,6 +380,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "The tilde operator",
       subtitle = "for equality constraints",
+      description = H.p "TODO: description",
       completed = True
     } [whitespaceSensitiveOperators]
 
@@ -347,6 +388,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Whitespace-sensitive operators",
       subtitle = "prefix vs infix occurrences",
+      description = H.p "TODO: description",
       completed = True
     } []
 
@@ -354,6 +396,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Unify type and kind variables",
       subtitle = "consistent quantification rules",
+      description = H.p "TODO: description",
       completed = True
     } [typeInType]
 
@@ -361,6 +404,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Deprecate CUSKs",
       subtitle = "complete user-supplied kinds",
+      description = H.p "TODO: description",
       completed = False
     } [invisibleBindersInTypes]
 
@@ -368,6 +412,7 @@ roadmap = runRoadmapBuilder mdo
     Goalpost {
       title = "Unify types and kinds",
       subtitle = "with the Type :: Type axiom",
+      description = H.p "TODO: description",
       completed = True
     } []
 
@@ -393,6 +438,8 @@ dhPage time roadmapSvg = do
         headerHtml "dependent types roadmap"
       (H.div ! A.class_ "roadmap") do
         H.unsafeLazyByteString roadmapSvg
+      (H.div ! A.class_ "goals") do
+        traverse_ goalHtml (roadmap.goals)
       (H.div ! A.class_ "footer") do
         footerHtml time
 
@@ -403,11 +450,36 @@ dhStyle = do
     C.display C.flex
     C.flexDirection C.column
     C.alignItems C.center
-    "outline" -: "1px solid #333333"
     C.overflowX C.auto
   ".roadmap svg" ? do
-    C.padding (C.px 20) (C.px 20) (C.px 20) (C.px 20)
+    C.sym C.padding (C.px 20)
     -- C.border C.solid (C.px 1) C.magenta
     C.width (C.pct 90)
     C.minWidth (C.px 600)
     C.maxWidth (C.px 1200)
+  ".goals" ? do
+    C.borderTop (C.px 1) C.solid (C.rgb 0x33 0x33 0x33)
+    C.sym C.padding (C.px 30)
+    C.display C.grid
+    C.justifyContent C.center
+    "grid-template-columns" -: "repeat(auto-fill, 640px)"
+    "grid-gap" -: "30px"
+    "grid-auto-rows" -: "min-content"
+  ".goalpost" ? do
+    (C.h2 <> C.h3) ? do
+      C.marginTop (C.px 0)
+      C.marginBottom (C.px 5)
+    C.header ? do
+      C.textAlign C.center
+      "background" -: "linear-gradient(to top left, #252525, #282828)"
+    (C.header <> C.p) ? do
+      C.sym C.padding (C.px 20)
+    C.border (C.px 1) C.solid (C.rgb 0x33 0x33 0x33)
+
+goalHtml :: Goal -> H.Html
+goalHtml goal = do
+  (H.div ! A.class_ "goalpost") do
+    H.header do
+      H.h2 (H.text goal.title)
+      H.h3 (H.text goal.subtitle)
+    goal.description

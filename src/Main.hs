@@ -71,7 +71,8 @@ mainStyle = do
   ".topic" ? do
     C.sym C.padding (C.px 20)
     "background" -: "linear-gradient(to top left, #222222, #333333)"
-    "border" -: "1px solid #333333"
+    C.border (C.px 1) C.solid (C.rgb 0x33 0x33 0x33)
+
   traverse_ topicCss topics
 
 snippetCss :: C.Css
