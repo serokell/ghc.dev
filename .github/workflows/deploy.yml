@@ -1,0 +1,20 @@
+name: deploy
+on: push
+env:
+  NIX_PATH: "nixpkgs=channel:nixos-unstable"
+  CDN_DISTRIBUTION_ID: "E37J93462NMI5V"
+  CDN_BUCKET: "s3://ghc.dev-prod"
+
+jobs:
+  deploy_to_AWS:
+    runs-on: [self-hosted, nix]
+    steps:
+      - uses: actions/checkout@v4
+      - name: build
+        run: nix build
+      - name: deploy
+        if: github.ref_name == 'master'
+        run: |
+          nix-shell -p awscli --run "aws s3 cp result/out $CDN_BUCKET/ --recursive"
+          echo +++ Invalidating cache
+          nix-shell -p awscli --run "aws cloudfront create-invalidation --distribution-id $CDN_DISTRIBUTION_ID --paths '/*'"
