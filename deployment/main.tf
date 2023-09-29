@@ -24,9 +24,6 @@ variable "root_domain_name" {
 resource "aws_s3_bucket" "www" {
   // Our bucket's name is going to be the same as our site's domain name.
   bucket = "${var.root_domain_name}-prod"
-  // Because we want our site to be available on the internet, we set this so
-  // anyone can read this bucket.
-  acl    = "public-read"
   // We also need to create a policy that allows anyone to view the content.
   // This is basically duplicating what we did in the ACL but it's required by
   // AWS. This post: http://amzn.to/2Fa04ul explains why.
@@ -45,20 +42,30 @@ resource "aws_s3_bucket" "www" {
 }
 POLICY
 
-  // S3 understands what it means to host a website.
-  website {
-    // Here we tell S3 what to use when a request comes in to the root
-    index_document = "index.html"
-    // The page to serve up if a request results in an error or a non-existing
-    // page.
-    //error_document = "404.html"
-  }
+}
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+resource "aws_s3_bucket_acl" "example" {
+  bucket = aws_s3_bucket.www.id
+
+  // Because we want our site to be available on the internet, we set this so
+  // anyone can read this bucket.
+  acl    = "public-read"
+}
+
+resource "aws_s3_bucket_website_configuration" "www" {
+  bucket = aws_s3_bucket.www.id
+
+  index_document {
+    suffix = "index.html"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "www" {
+  bucket = aws_s3_bucket.www.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
 }
@@ -102,7 +109,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
     }
 
     // Here we're using our S3 bucket's URL!
-    domain_name = aws_s3_bucket.www.website_endpoint
+    domain_name = aws_s3_bucket_website_configuration.www.website_endpoint
 
     // This can be any name to identify this origin.
     origin_id = var.root_domain_name
