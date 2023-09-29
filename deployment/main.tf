@@ -235,7 +235,7 @@ output "AWS_ACCESS_KEY_ID" {
   value = aws_iam_access_key.deployer.id
 }
 output "AWS_SECRET_ACCESS_KEY" {
-  value = aws_iam_access_key.deployer.secret
+  value = nonsensitive(aws_iam_access_key.deployer.secret)
 }
 output "CDN_DISTRIBUTION_ID" {
   value = aws_cloudfront_distribution.www_distribution.id
