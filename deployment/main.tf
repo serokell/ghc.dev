@@ -56,20 +56,20 @@ POLICY
 }
 
 resource "aws_acm_certificate" "cert" {
-  domain_name       = "${var.root_domain_name}"
+  domain_name       = var.root_domain_name
   validation_method = "DNS"
 }
 resource "aws_route53_record" "cert_validation" {
-  name    = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_name}"
-  type    = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_type}"
-  zone_id = "${aws_route53_zone.zone.zone_id}"
-  records = ["${aws_acm_certificate.cert.domain_validation_options.0.resource_record_value}"]
+  name    = aws_acm_certificate.cert.domain_validation_options[0].resource_record_name
+  type    = aws_acm_certificate.cert.domain_validation_options[0].resource_record_type
+  zone_id = aws_route53_zone.zone.zone_id
+  records = [aws_acm_certificate.cert.domain_validation_options[0].resource_record_value]
   ttl     = 60
 }
 
 resource "aws_acm_certificate_validation" "cert" {
-  certificate_arn         = "${aws_acm_certificate.cert.arn}"
-  validation_record_fqdns = ["${aws_route53_record.cert_validation.fqdn}"]
+  certificate_arn         = aws_acm_certificate.cert.arn
+  validation_record_fqdns = [aws_route53_record.cert_validation.fqdn]
 }
 resource "aws_cloudfront_distribution" "www_distribution" {
   // origin is where CloudFront gets its content from.
@@ -86,9 +86,10 @@ resource "aws_cloudfront_distribution" "www_distribution" {
     }
 
     // Here we're using our S3 bucket's URL!
-    domain_name = "${aws_s3_bucket.www.website_endpoint}"
+    domain_name = aws_s3_bucket.www.website_endpoint
+
     // This can be any name to identify this origin.
-    origin_id   = "${var.root_domain_name}"
+    origin_id = var.root_domain_name
   }
 
   enabled             = true
@@ -101,7 +102,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
     // This needs to match the `origin_id` above.
-    target_origin_id       = "${var.root_domain_name}"
+    target_origin_id       = var.root_domain_name
     min_ttl                = 0
     default_ttl            = 86400
     max_ttl                = 31536000
@@ -116,7 +117,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
 
   // Here we're ensuring we can hit this distribution using www.runatlantis.io
   // rather than the domain name CloudFront gives us.
-  aliases = ["${var.root_domain_name}"]
+  aliases = [var.root_domain_name]
 
   restrictions {
     geo_restriction {
@@ -126,51 +127,51 @@ resource "aws_cloudfront_distribution" "www_distribution" {
 
   // Here's where our certificate is loaded in!
   viewer_certificate {
-    acm_certificate_arn = "${aws_acm_certificate.cert.arn}"
+    acm_certificate_arn = aws_acm_certificate.cert.arn
     ssl_support_method  = "sni-only"
   }
 }
 // We want AWS to host our zone so its nameservers can point to our CloudFront
 // distribution.
 resource "aws_route53_zone" "zone" {
-  name = "${var.root_domain_name}"
+  name = var.root_domain_name
 }
 
 // This Route53 record will point at our CloudFront distribution.
 resource "aws_route53_record" "www" {
-  zone_id = "${aws_route53_zone.zone.zone_id}"
-  name    = "${var.root_domain_name}"
+  zone_id = aws_route53_zone.zone.zone_id
+  name    = var.root_domain_name
   type    = "A"
 
-  alias = {
-    name                   = "${aws_cloudfront_distribution.www_distribution.domain_name}"
-    zone_id                = "${aws_cloudfront_distribution.www_distribution.hosted_zone_id}"
+  alias {
+    name                   = aws_cloudfront_distribution.www_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.www_distribution.hosted_zone_id
     evaluate_target_health = false
   }
 }
 
 // This Route53 record will point at our CloudFront distribution.
 resource "aws_route53_record" "www6" {
-  zone_id = "${aws_route53_zone.zone.zone_id}"
-  name    = "${var.root_domain_name}"
+  zone_id = aws_route53_zone.zone.zone_id
+  name    = var.root_domain_name
   type    = "AAAA"
 
-  alias = {
-    name                   = "${aws_cloudfront_distribution.www_distribution.domain_name}"
-    zone_id                = "${aws_cloudfront_distribution.www_distribution.hosted_zone_id}"
+  alias {
+    name                   = aws_cloudfront_distribution.www_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.www_distribution.hosted_zone_id
     evaluate_target_health = false
   }
 }
 // now a user to deploy this
 resource "aws_iam_access_key" "deployer" {
-  user = "${aws_iam_user.deployer.name}"
+  user = aws_iam_user.deployer.name
 }
 resource "aws_iam_user" "deployer" {
-  name = "${var.root_domain_name}-deployer" 
+  name = "${var.root_domain_name}-deployer"
 }
 resource "aws_iam_user_policy" "deployer" {
-  name = "deploy-${var.root_domain_name}"
-  user = "${aws_iam_user.deployer.name}"
+  name   = "deploy-${var.root_domain_name}"
+  user   = aws_iam_user.deployer.name
   policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -215,13 +216,13 @@ resource "aws_iam_user_policy" "deployer" {
 POLICY
 }
 output "AWS_ACCESS_KEY_ID" {
-  value = "${aws_iam_access_key.deployer.id}"
+  value = aws_iam_access_key.deployer.id
 }
 output "AWS_SECRET_ACCESS_KEY" {
-  value = "${aws_iam_access_key.deployer.secret}"
+  value = aws_iam_access_key.deployer.secret
 }
 output "CDN_DISTRIBUTION_ID" {
-  value = "${aws_cloudfront_distribution.www_distribution.id}"
+  value = aws_cloudfront_distribution.www_distribution.id
 }
 output "CDN_BUCKET" {
   value = "s3://${aws_s3_bucket.www.bucket}"
