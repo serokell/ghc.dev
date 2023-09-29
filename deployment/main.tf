@@ -24,24 +24,6 @@ variable "root_domain_name" {
 resource "aws_s3_bucket" "www" {
   // Our bucket's name is going to be the same as our site's domain name.
   bucket = "${var.root_domain_name}-prod"
-  // We also need to create a policy that allows anyone to view the content.
-  // This is basically duplicating what we did in the ACL but it's required by
-  // AWS. This post: http://amzn.to/2Fa04ul explains why.
-  policy = <<POLICY
-{
-  "Version":"2012-10-17",
-  "Statement":[
-    {
-      "Sid":"AddPerm",
-      "Effect":"Allow",
-      "Principal": "*",
-      "Action":["s3:GetObject"],
-      "Resource":["arn:aws:s3:::${var.root_domain_name}-prod/*"]
-    }
-  ]
-}
-POLICY
-
 }
 
 resource "aws_s3_bucket_acl" "example" {
@@ -68,6 +50,27 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "www" {
       sse_algorithm = "AES256"
     }
   }
+}
+
+resource "aws_s3_bucket_policy" "www_allow_access" {
+  bucket = aws_s3_bucket.www.id
+  // We also need to create a policy that allows anyone to view the content.
+  // This is basically duplicating what we did in the ACL but it's required by
+  // AWS. This post: http://amzn.to/2Fa04ul explains why.
+  policy = <<POLICY
+{
+  "Version":"2012-10-17",
+  "Statement":[
+    {
+      "Sid":"AddPerm",
+      "Effect":"Allow",
+      "Principal": "*",
+      "Action":["s3:GetObject"],
+      "Resource":["arn:aws:s3:::${var.root_domain_name}-prod/*"]
+    }
+  ]
+}
+POLICY
 }
 
 resource "aws_acm_certificate" "cert" {
