@@ -3,5 +3,8 @@ The state is stored in an aws bucket on our account. Don't forget to set AWS_PRO
 
 ```bash
 export AWS_PROFILE=srk-prod
-nix-shell --run "terraform init && terraform apply"
+nix develop ../.#tf
+terraform init
+terraform plan
+terraform apply
 ```

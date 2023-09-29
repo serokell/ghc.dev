@@ -33,5 +33,11 @@
           haskellPackages.cabal-install
         ];
       };
+
+      devShells.${system}.tf = pkgs.mkShell {
+        buildInputs = [
+          nixpkgs.legacyPackages.${system}.terraform
+        ];
+      };
     };
 }
