@@ -332,7 +332,6 @@ topicBuildingDocs =
       snippet do
         prompt
           [ "hadrian/build", "-j",
-            nowrap H.span "--flavour=Quick",
             nowrap H.span "--freeze1",
             nowrap H.span "docs --docs=no-sphinx-pdfs" ]
       H.p "The generated HTML documentation is saved at:"
@@ -352,7 +351,6 @@ topicTesting =
       snippet do
         prompt
           [ "hadrian/build", "-j",
-            nowrap H.span "--flavour=Quick",
             nowrap H.span "--freeze1",
             "test",
             nowrap H.span "--only=\"T1 T2 T3\"" ]
@@ -386,6 +384,7 @@ topicDebugging =
         prompt
           [ "hadrian/build", "-j",
             nowrap H.span "--flavour=Devel2" ]
+      H.p "Note that some tests may not pass in this configuration."
     topicStyle = do pure()
 
 topicCommunication :: Topic
