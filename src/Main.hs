@@ -238,7 +238,7 @@ topicCode =
       H.p do
         "GHC has its own "
         H.a "GitLab instance" ! A.href (ref RefGitLab)
-        ". You can sign in with your GitHub account."
+        "."
       snippet do
         prompt
           [ "git", "clone", nowrap H.span "--recurse-submodules",
