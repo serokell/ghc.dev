@@ -289,13 +289,11 @@ topicBuild =
         prompt ["./boot && ./configure"]
         prompt ["cabal", "v2-update"]
         prompt
-          [ "hadrian/build", "-j",
-            nowrap H.span "--flavour=Quick" ]
+          [ "hadrian/build", "-j" ]
       H.p ("Quick " <> H.code "stage2" <> " rebuild:")
       snippet do
         prompt
           [ "hadrian/build", "-j",
-            nowrap H.span "--flavour=Quick",
             nowrap H.span "--freeze1" ]
     topicStyle = do pure()
 
