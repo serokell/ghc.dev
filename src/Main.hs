@@ -160,7 +160,7 @@ ref = \case
   RefGhcProposals -> "https://github.com/ghc-proposals/ghc-proposals"
   RefGhcDevsMailingList -> "https://mail.haskell.org/pipermail/ghc-devs/"
   RefNix -> "https://nixos.org/nix/"
-  RefGHC_Nix -> "https://github.com/alpmestan/ghc.nix"
+  RefGHC_Nix -> "https://gitlab.haskell.org/ghc/ghc.nix"
 
 data Topic =
   Topic
@@ -265,8 +265,8 @@ topicSystem =
         H.a (H.code "ghc.nix") ! A.href (ref RefGHC_Nix)
         ":"
       snippet do
-        prompt [ "git", "clone", "https://github.com/alpmestan/" <> H.wbr <> "ghc.nix" ]
-        prompt [ "nix develop ghc.nix" ]
+        prompt [ "nix", "flake", "init", "-t", "git+https://gitlab.haskell.org/" <> H.wbr <> "ghc/ghc.nix" ]
+        prompt [ "direnv allow" ]
       H.p do
         "This will install "
         H.code "alex" <> ", "
