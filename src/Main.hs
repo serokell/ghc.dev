@@ -265,8 +265,7 @@ topicSystem =
         H.a (H.code "ghc.nix") ! A.href (ref RefGHC_Nix)
         ":"
       snippet do
-        prompt [ "nix", "flake", "init", "-t", "git+https://gitlab.haskell.org/" <> H.wbr <> "ghc/ghc.nix" ]
-        prompt [ "direnv allow" ]
+        prompt [ "nix", "develop", "git+https://gitlab.haskell.org/ghc/ghc.nix.git", "-c" "$SHELL" ]
       H.p do
         "This will install "
         H.code "alex" <> ", "
