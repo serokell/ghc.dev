@@ -158,7 +158,7 @@ ref = \case
   RefGitLabMergeRequest -> "https://gitlab.haskell.org/ghc/ghc/wikis/Contributing-a-Patch#opening-a-merge-request"
   RefReportBug -> "https://gitlab.haskell.org/ghc/ghc/issues"
   RefGhcProposals -> "https://github.com/ghc-proposals/ghc-proposals"
-  RefGhcDevsMailingList -> "https://mail.haskell.org/pipermail/ghc-devs/"
+  RefGhcDevsMailingList -> "https://mailman.haskell.org/archives/list/ghc-devs@haskell.org/"
   RefNix -> "https://nixos.org/nix/"
   RefGHC_Nix -> "https://gitlab.haskell.org/ghc/ghc.nix"
 
