@@ -286,6 +286,11 @@ topicBuild =
       H.p "For the first time:"
       snippet do
         prompt ["./boot && ./configure"]
+      H.p ("or, if you use " <> H.code "ghc.nix" <> ":")
+      snippet do
+        prompt ["./boot && configure_ghc"]
+      H.p "Then:"
+      snippet do
         prompt ["cabal", "v2-update"]
         prompt
           [ "hadrian/build", "-j" ]
